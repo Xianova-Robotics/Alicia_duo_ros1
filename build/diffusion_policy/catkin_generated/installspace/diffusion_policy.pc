@@ -1,0 +1,8 @@
+prefix=/home/eto/Alicia_duo_ros/install
+
+Name: diffusion_policy
+Description: Description of diffusion_policy
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: rospy std_msgs message_runtime
