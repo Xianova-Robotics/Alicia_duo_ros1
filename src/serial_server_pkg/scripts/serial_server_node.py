@@ -19,7 +19,7 @@ def find_serial_ports():
 
         @return 返回包含所有可用串口名称的列表的第一个
     """
-    return [port.device for port in serial.tools.list_ports.comports()][0]
+    return [port.device for port in serial.tools.list_ports.comports()][1]
 
 def monitor_serial_ports():
     """
@@ -117,6 +117,7 @@ def read_frame(ser, pub):
     dim.stride = 1                                                  ## 数组只有一个维度
     frame_msg = []                                                  # 整数数组，存储由接收到的“bytearray”字节数组转化成的整数
     state = True                                                    # 是否开始出现有需要的帧
+    msg.layout.dim.append(dim)
 
     try:
         while not rospy.is_shutdown():
@@ -146,7 +147,6 @@ def read_frame(ser, pub):
                     if len(frame_msg) == expected_length:           # 检查是否已经收到了完整的帧
                         if serial_data_check(frame_msg):            # 如果校验位正确，则认为帧接收完成
                             dim.size = len(frame_msg)               ## 数组大小为帧长度
-                            msg.layout.dim.append(dim)
                             msg.data = np.array(frame_msg, dtype=np.uint8) # NumPy 数组
                             msg.data = msg.data.tolist()            # 将 NumPy 数组转换为列表
 
@@ -190,6 +190,7 @@ def send_serial_data_callback(serial_data):
     global ser
 
     byte_data = bytearray(serial_data.data)
+
     try:
         ser.write(byte_data)
         print_hex_frame(serial_data.data, 2)

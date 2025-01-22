@@ -4,6 +4,7 @@
 ## 不是3.10
 import rospy
 from std_msgs.msg import UInt8MultiArray
+from std_msgs.msg import Int32
 
 def print_hex_frame(frame_msg):
     """
@@ -31,6 +32,7 @@ class SerialReaderNode:
         rospy.init_node('read_serial_type_node') # 初始化节点
         
         # 用 self 表明它是类变量，而不是一个局部变量或全局变量
+        self.pub_2 = rospy.Publisher('gripper_angle', Int32, queue_size=10)
         self.pub_4 = rospy.Publisher('servo_states', UInt8MultiArray, queue_size=10)
         self.pub_EE = rospy.Publisher('error_frame_deal', UInt8MultiArray, queue_size=10)
         
@@ -45,7 +47,10 @@ class SerialReaderNode:
         """
         command = serial_msg.data[1] # 指令id
         
-        if command == 0x04:
+        if command == 0x02:
+            gripper_angle = serial_msg.data[4] | serial_msg.data[5] << 8
+            self.pub_2.publish(gripper_angle)
+        elif command == 0x04:
             self.pub_4.publish(serial_msg)
             # print_hex_frame(serial_msg.data)
         elif command == 0xEE:

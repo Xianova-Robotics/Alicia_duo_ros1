@@ -1,4 +1,6 @@
 std_msgs/Float32MultiArray servo_target_angle
 std_msgs/Float32MultiArray servo_target_cycle
+std_msgs/Float32 gripper_angle
 std_msgs/UInt8MultiArray servo_target_angle_u8
 std_msgs/UInt8MultiArray servo_target_cycle_u8
+std_msgs/UInt8MultiArray gripper_angle_u8

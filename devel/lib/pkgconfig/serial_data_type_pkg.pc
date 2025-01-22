@@ -1,8 +1,0 @@
-prefix=/home/eto/Alicia_duo_ros/devel
-
-Name: serial_data_type_pkg
-Description: Description of serial_data_type_pkg
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

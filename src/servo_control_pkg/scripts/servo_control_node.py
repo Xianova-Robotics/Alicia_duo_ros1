@@ -5,6 +5,7 @@
 import rospy
 from std_msgs.msg import UInt8MultiArray, MultiArrayDimension
 from frame_msgs.msg import set_servo_as
+import time
 
 def Hxj_angle_scale(servo_angle, scale):
     if scale:
@@ -28,6 +29,18 @@ def float_to_u8_array(float_array, u8_array):
         # 拆分为高 8 位和低 8 位
         u8_array[3+2*i] = int_value & 0xFF
         u8_array[3+2*i+1] = (int_value >> 8) & 0xFF
+
+def float_v_to_u8_array(float_value, u8_array):
+    int_value = int(float_value)
+
+    if int_value < -32768 or int_value > 32767:
+        raise ValueError("Float value is out of the 16-bit signed integer range.")
+
+    if int_value < 0:
+        int_value += 0x10000
+
+    u8_array[3+1] = int_value & 0xFF
+    u8_array[3+1+1] = (int_value >> 8) & 0xFF
 
 def sum_elements(int_array_data):
     """
@@ -83,8 +96,8 @@ class ServoControlNode:
         self.dim = MultiArrayDimension()                                                            ## 定义一个数组维度
         self.dim.size    = self.servo_control_num * 2 * 2 + 5                                       ## 数组长度
         self.dim.stride  = 1                                                                        ## 数组只有一个维度
-        self.servo_control_pkg.layout.dim.append(self.dim)
         self.dim.size    = self.servo_control_num * 2 + 5                                           ## 数组长度
+        self.servo_control_pkg.layout.dim.append(self.dim)
 
         self.servo_angle_data = [0] * self.dim.size 
         self.servo_cycle_data = [0] * self.dim.size 
@@ -96,6 +109,14 @@ class ServoControlNode:
         self.servo_cycle_data[2] = self.dim.size - 5
         self.servo_angle_data[self.dim.size - 1] = 0xFF
         self.servo_cycle_data[self.dim.size - 1] = 0xFF
+
+        self.gripper_angle = 0
+        self.gripper_angle_data = [0] * (5 + 3) 
+        self.gripper_angle_data[0] = 0xAA
+        self.gripper_angle_data[1] = 0x02
+        self.gripper_angle_data[2] = 0x03
+        self.gripper_angle_data[3] = 0x01      ## 默认
+        self.gripper_angle_data[5 + 3 - 1] = 0xFF
         
         # 以一定频率订阅串口数据话题
         self.rate = 1000.0  # 限定1s几次
@@ -113,6 +134,7 @@ class ServoControlNode:
         ### 写的暂时是只有角度，没有周期!!!!!!
         float_to_u8_array(servo_control_msg.servo_target_angle.data, self.servo_angle_data)
         float_to_u8_array(servo_control_msg.servo_target_cycle.data, self.servo_cycle_data)
+        float_v_to_u8_array(servo_control_msg.gripper_angle.data, self.gripper_angle_data)
 
         ## 开发观测位 -- u8
         servo_control_msg.servo_target_angle_u8.layout.dim.append(self.dim)
@@ -120,11 +142,19 @@ class ServoControlNode:
         servo_control_msg.servo_target_angle_u8.data = self.servo_angle_data
         servo_control_msg.servo_target_cycle_u8.data = self.servo_cycle_data
 
+        # servo_control_msg.gripper_angle_u8.layout.dim.append(self.dim)
+        # servo_control_msg.gripper_angle_u8.layout.dim.size = 5 + 3
+        servo_control_msg.gripper_angle_u8.data = self.gripper_angle_data
+
         ## 检验位填写
         servo_control_msg.servo_target_angle_u8.data[self.dim.size - 2] = sum_elements(self.servo_angle_data) % 2
         servo_control_msg.servo_target_cycle_u8.data[self.dim.size - 2] = sum_elements(self.servo_cycle_data) % 2
+        servo_control_msg.gripper_angle_u8.data[(5+3) - 2]              = sum_elements(self.gripper_angle_data) % 2
 
+        # time.sleep(0.002)
         self.pub.publish(servo_control_msg.servo_target_angle_u8)
+        # time.sleep(0.002)
+        self.pub.publish(servo_control_msg.gripper_angle_u8)
 
         # self.servo_angle_data[self.dim.size - 2] = sum_elements(self.servo_angle_data) % 2
         # self.servo_cycle_data[self.dim.size - 2] = sum_elements(self.servo_cycle_data) % 2

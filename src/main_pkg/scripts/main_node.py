@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 #coding=utf-8
 
-## 不是3.10
+## 不是3.10                      
 import rospy
 from std_msgs.msg import Float32MultiArray, MultiArrayDimension
 from frame_msgs.msg import set_servo_as
@@ -25,7 +25,7 @@ class MainNode:
         self.msg.servo_target_angle.layout.dim.append(self.dim)
         self.msg.servo_target_cycle.layout.dim.append(self.dim)
 
-        self.servo_angle_data = [initial_value] * self.servo_control_num
+        self.servo_angle_data = [initial_value] * (self.servo_control_num + 1)
         
         # 以一定频率订阅串口数据话题
         self.sub_states = rospy.Subscriber('servo_states_main', Float32MultiArray, self.main_servo_states_callback)
@@ -33,27 +33,29 @@ class MainNode:
         self.pub= rospy.Publisher('main_control_servo', set_servo_as, queue_size=10)    ## main_pkg 中整合
 
         ## 测试用
-        self.servo_target_angle     = [0.0, 0.0, 0.0, 0.0, 0.0, -90.0, 90.0]
-        self.servo_target_angle_2   = [0.0, 0.0, 0.0, 0.0, 0.0, 90.0, -90.0]
+        self.servo_target_angle     = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.servo_target_angle_2   = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.servo_target_cycle     = [1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0]
+        self.gripper_angle1         = 0.0
+        self.gripper_angle2         = 100.0
 
-    def main_servo_states_callback(self, servo_angle_msg):
+    def main_servo_states_callback(self, servo_angle_msg):               
         """
             @brief 舵机状态数据回调函数
 
             @param servo_angle_msg: 舵机状态数据
         """
-        if len(servo_angle_msg.data) != self.servo_control_num:
+        if len(servo_angle_msg.data) != self.servo_control_num + 1:
             print("main中接收的舵机数量与设定的舵机数量不一致!!\n")
             return 1
         
         self.servo_angle_data = servo_angle_msg.data
 
         ## 显示角度
-        for i in range(self.servo_control_num):
+        for i in range(self.servo_control_num + 1):
             print(f"---->当前{i + 1}号电机角度为: {self.servo_angle_data[i]:.2f}")
 
-    def main_control_servo(self, servo_angle_buf, servo_angle_cycle):
+    def main_control_servo(self, servo_angle_buf, servo_angle_cycle, gripper_angle):
         """
             @brief 发送控制舵机数据
 
@@ -67,6 +69,7 @@ class MainNode:
 
         self.msg.servo_target_angle.data = servo_angle_buf
         self.msg.servo_target_cycle.data = servo_angle_cycle
+        self.msg.gripper_angle.data      = gripper_angle
 
         self.pub.publish(self.msg)
     
@@ -81,9 +84,9 @@ class MainNode:
 def demo_thread(node):
     try:
         while not rospy.is_shutdown():
-            node.main_control_servo(node.servo_target_angle, node.servo_target_cycle)
-            time.sleep(2)
-            node.main_control_servo(node.servo_target_angle_2, node.servo_target_cycle)
+            # node.main_control_servo(node.servo_target_angle, node.servo_target_cycle, node.gripper_angle1)
+            # time.sleep(2)
+            # node.main_control_servo(node.servo_target_angle_2, node.servo_target_cycle, node.gripper_angle2)
             time.sleep(2)
     except KeyboardInterrupt:
         print("程序退出ed.\n")

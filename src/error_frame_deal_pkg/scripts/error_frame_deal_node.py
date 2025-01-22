@@ -29,8 +29,8 @@ class ErrorFramDealNode:
             command = error_frame_deal_msg.data[3] # 错误号
 
             if command == 0x00:     ## 包头包尾或数据长度不对
-                print("error: 发送的 %d 帧不匹配!!\n", error_frame_deal_msg.data[4])
-            elif command == 0x01:   ## 校验位不对
+                print("error: 发送的 error_frame_deal_msg.data[4] 帧不匹配!!\n")
+            elif command   == 0x01:   ## 校验位不对
                 print("error: 发送的帧检验位不匹配!!\n", error_frame_deal_msg.data[4])
             elif command == 0x02:   ## 模式不对
                 print("error: 当前 F1 控制舵机模式不再允许范围, 请查看 F1 的模式按钮!!\n", error_frame_deal_msg.data[4])
