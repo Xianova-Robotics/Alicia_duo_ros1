@@ -4,7 +4,7 @@
 # 针对不同的摄像头，需要设置不同的索引，例如：[0, 2]。
 import rospy
 import numpy as np
-from diffusion_policy_obs.msg import ObsData
+from diffusion_policy_obs.msg import status_data
 from diffusion_policy_obs.msg import obsdata
 from diffusion_policy_obs.srv import ProcessData, ProcessDataResponse
 import threading
@@ -95,10 +95,10 @@ class DataSaverNode:
                 # 检查数据是否完整
                 if 'camera_0' not in self.req['obs'] or 'robot_joint' not in self.req['obs']:
                     rospy.logwarn("Incomplete data in self.req.")
-                    return ProcessDataResponse(success=False, data=ObsData())
+                    return ProcessDataResponse(success=False, data=status_data())
 
                 # 将 NumPy 数组转换为 ObsData 消息
-                obs_data = ObsData()
+                obs_data = status_data()
                 obs_data.camera_0 = self.req['obs']['camera_0'].flatten().tolist()  # 展平为一维列表
                 obs_data.camera_2= self.req['obs']['camera_2'].flatten().tolist()  # 展平为一维列表
                 obs_data.robot_joint = self.req['obs']['robot_joint'].tolist()
@@ -110,7 +110,7 @@ class DataSaverNode:
                 return ProcessDataResponse(success=True, data=obs_data)
             except Exception as e:
                 rospy.logerr(f"Error handling service request: {e}")
-                return ProcessDataResponse(success=False, data=ObsData())
+                return ProcessDataResponse(success=False, data=status_data())
 
     def __del__(self):
         """

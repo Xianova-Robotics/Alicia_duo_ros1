@@ -27,7 +27,7 @@ from diffusion_policy.model.common.rotation_transformer import RotationTransform
 import rospy
 import numpy as np
 from diffusion_policy_obs.srv import ProcessData, ProcessDataRequest
-from diffusion_policy_obs.msg import ObsData
+from diffusion_policy_obs.msg import status_data
 from frame_msgs.msg import set_servo_as
 
 POLICY_CONTROL_PERIOD = 0.1  # 100 ms (10 Hz)
@@ -130,8 +130,6 @@ class PolicyWrapper:
 
         if self.obs_queue.qsize() == 5:
             self.obs_queue.queue.clear()
-        # 打印队列长度
-        print(f"队列长度: {self.obs_queue.qsize()}")
         
         # 如果act_queue不为空，取出一个动作并清空队列
         if not self.act_queue.empty():
@@ -214,41 +212,6 @@ class PolicyServer:
                     continue
                 # 获取观察数据
                 obs = self.req['obs']
-                print(f"Generated image shape: {self.req['obs']['camera_2'].shape}")
-                print(f"Generated robot_joint: {self.req['obs']['robot_joint']}")
-
-                camera_0_image = self.req['obs']['camera_2']               
-                angles_text = f"Joint Angles: {self.req['obs']['robot_joint']}"
-                camera_0_image_display = camera_0_image.transpose(1, 2, 0)
-
-                # 检查图像数据类型并转换为 uint8
-                if camera_0_image_display.dtype != np.uint8:
-                    camera_0_image_display = camera_0_image_display.astype(np.uint8)
-
-                # 检查图像通道顺序并转换为 BGR
-                if camera_0_image_display.shape[2] == 3:  # 如果是 RGB 图像
-                    camera_0_image_display = cv2.cvtColor(camera_0_image_display, cv2.COLOR_RGB2BGR)
-
-                # 检查图像是否为空
-                if camera_0_image_display is None:
-                    print("Error: camera_0_image_display is None.")
-                elif camera_0_image_display.size == 0:
-                    print("Error: camera_0_image_display is empty.")
-
-
-                print(camera_0_image_display.dtype)
-                # 在图像上绘制文本
-                font = cv2.FONT_HERSHEY_SIMPLEX  # 字体
-                position = (10, 30)  # 文本位置 (x, y)
-                font_scale = 0.8  # 字体大小
-                font_color = (0, 255, 0)  # 字体颜色 (BGR 格式，这里是绿色)
-                thickness = 2  # 字体粗细
-
-                cv2.putText(camera_0_image_display, angles_text, position, font, font_scale, font_color, thickness)
-                # 显示图像
-                cv2.imshow('Camera 1', camera_0_image_display)
-                cv2.waitKey(1)  # 等待 1 毫秒，确保窗口更新                
-
             # 使用 policy 生成动作
             action = self.step(obs)
             
@@ -327,7 +290,7 @@ def call_process_data_service(server):
                 # 将展平的数据恢复为 (3, 240, 320) 的形状
                 camera_2 = camera_2_flat.reshape(3, 240, 320)
 
-                # 将 ObsData 消息转换为字典格式
+                # 将消息转换为字典格式
                 req = {
                     'obs': {
                         'camera_0': camera_0,  # 图像数据已经是列表格式
@@ -337,6 +300,28 @@ def call_process_data_service(server):
                 }
 
                 server.update_req(req)
+
+                angles_text = f"Joint Angles: {req['obs']['robot_joint']}"
+
+                # 显示摄像头 0 的图像
+                camera_0_display = camera_0.transpose(1, 2, 0)  # 转置为 (240, 320, 3) 以便显示
+                cv2.imshow('Camera 0', camera_0_display)
+
+                # 显示摄像头 2 的图像
+                camera_2_display = camera_2.transpose(1, 2, 0)  # 转置为 (240, 320, 3) 以便显示
+                # 在图像上绘制文本
+                font = cv2.FONT_HERSHEY_SIMPLEX  # 字体
+                position = (10, 30)  # 文本位置 (x, y)
+                font_scale = 0.8  # 字体大小
+                font_color = (0, 255, 0)  # 字体颜色 (BGR 格式，这里是绿色)
+                thickness = 2  # 字体粗细
+
+                cv2.putText(camera_2_display, angles_text, position, font, font_scale, font_color, thickness)
+                cv2.imshow('Camera 2', camera_2_display)
+
+                # 等待 1 毫秒，确保窗口更新
+                cv2.waitKey(1)
+
             else:
                 rospy.logwarn("Service call failed: No data available.")
             rate.sleep()

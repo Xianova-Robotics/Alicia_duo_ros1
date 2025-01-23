@@ -14,30 +14,22 @@ import numpy as np
 import torch
 import zmq
 import cv2
-
-# import sys
-# # 打印当前的 Python 路径
-# print("Current Python Path (sys.path):")
-# sys.path.append('/home/xuanya/eto/diffusion_policy')
-# for path in sys.path:
-#     print(path)
-
 import sys
 import os
 
-# 添加 diffusion_policy 的路径
-diffusion_policy_path = os.path.abspath("/home/xuanya/eto/diffusion_policy")
-if diffusion_policy_path not in sys.path:
-    sys.path.append(diffusion_policy_path)
+# # 添加 diffusion_policy 的路径
+# diffusion_policy_path = os.path.abspath("DP/diffusion_policy")
+# if diffusion_policy_path not in sys.path:
+#     sys.path.append(diffusion_policy_path)
 
-from diffusion_policy.common.pytorch_util import dict_apply
-from diffusion_policy.model.common.rotation_transformer import RotationTransformer
+# from diffusion_policy.common.pytorch_util import dict_apply
+# from diffusion_policy.model.common.rotation_transformer import RotationTransformer
 
 
 import rospy
 import numpy as np
 from diffusion_policy_obs.srv import ProcessData, ProcessDataRequest
-from diffusion_policy_obs.msg import ObsData
+from diffusion_policy_obs.msg import status_data
 from frame_msgs.msg import set_servo_as
 
 POLICY_CONTROL_PERIOD = 0.1  # 100 ms (10 Hz)
@@ -93,8 +85,6 @@ class DiffusionPolicy:
                 self.warmed_up = True  # 设置已热身
             result = self.policy.predict_action(obs_dict)  # 获取策略输出
             action = result['action'][0].detach().to('cpu').numpy()  # 获取动作并转换为 numpy 数组
-        # 将动作转换为动作序列
-        # act_sequence = self._convert_action(action)
         return action  # 返回动作序列
     
     def _convert_obs(self, obs_sequence):
@@ -111,23 +101,8 @@ class DiffusionPolicy:
                 obs_dict_np[key] = images  # 将处理后的图像数据存储到字典中
             else:
                 obs_dict_np[key] = np.stack([obs[key] for obs in obs_sequence], axis=0).astype(np.float32)  # 处理其他类型的数据
-            # print(obs_dict_np)
         obs_dict = dict_apply(obs_dict_np, lambda x: torch.from_numpy(x).unsqueeze(0).to(self.device))
         return obs_dict  # 返回转换后的观察数据字典
-
-    def _convert_action(self, action):
-        act_sequence = []  # 创建空列表来存储动作序列
-        for act in action:  # 遍历每个动作
-            action_dict = {
-                'base_pose': act[:3],  # 基本姿势
-                'arm_pos': act[3:6],  # 手臂位置
-                'arm_quat': self.rotation_transformer.forward(act[6:12])[[1, 2, 3, 0]],  # (w, x, y, z) -> (x, y, z, w)
-                'gripper_pos': act[12:13],  # 夹爪位置
-            }
-            act_sequence.append(action_dict)  # 将动作字典添加到动作序列中
-        return act_sequence  # 返回动作序列
-
-
 
 class PolicyWrapper:
     def __init__(self, policy, n_obs_steps=2, n_action_steps=8):
@@ -170,8 +145,8 @@ class PolicyWrapper:
             
             # 如果动作序列不为空，返回当前动作
             if self.act_sequence is not None:
-                action = self.act_sequence[5]
-                print("推理执行动作:", action)
+                action = self.act_sequence[6]
+                print("推理生成的动作:", action)
                 self.obs_history.clear() 
                 self.act_sequence = []        # 清空动作序列
                 self.start_of_episode = True  # 标记为新的一轮的开始
@@ -228,10 +203,10 @@ class PolicyServer:
                 print(camera_0_image_display.dtype)
                 # 在图像上绘制文本
                 font = cv2.FONT_HERSHEY_SIMPLEX  # 字体
-                position = (10, 30)  # 文本位置 (x, y)
+                position = (5, 10)  # 文本位置 (x, y)
                 font_scale = 0.8  # 字体大小
                 font_color = (0, 255, 0)  # 字体颜色 (BGR 格式，这里是绿色)
-                thickness = 2  # 字体粗细
+                thickness = 0.5 # 字体粗细
 
                 cv2.putText(camera_0_image_display, angles_text, position, font, font_scale, font_color, thickness)
                 # 显示图像
@@ -246,7 +221,7 @@ class PolicyServer:
             if action is not None:
                 # 将动作发布到 ROS 话题
                 self.publish_action(latest_action)
-                time.sleep(1.5)  # 延时两秒
+
             # 模拟推理延迟
             time.sleep(0.1)  # 减少 sleep 时间以提高响应速度
 
@@ -270,23 +245,7 @@ class PolicyServer:
 
         print("控制action:", action)
         print("控制gripper_angle:", float(latest_action[-1]))
-        # 发布消息
-        self.action_pub.publish(action_msg)
-                
-        # 计算发布速率
-        # current_time = time.time()
-        # time_interval = current_time - self.last_publish_time
-        # publish_rate = 1 / time_interval if time_interval > 0 else 0
-        
-        # print("发布时间间隔:", time_interval)
-        # # 打印发布速率
-        # print(f"消息发布速率: {publish_rate:.2f} Hz")
-
-        # # 更新上一次发布消息的时间
-        # self.last_publish_time = current_time
-
-        
-
+                   
     def update_req(self, req):
         """
         更新 self.req 数据
@@ -322,15 +281,12 @@ def call_process_data_service(server):
 
                 # 获取服务返回的数据
                 obs_data = response.data
-                # print("Received image shape:", obs_data.camera_0)
-                # 将字节数据解码为图像
-                # 假设 obs_data.camera_0 是展平的 RGB 图像数据
                 camera_0_flat = np.frombuffer(obs_data.camera_0, dtype=np.uint8)
 
                 # 将展平的数据恢复为 (3, 240, 320) 的形状
                 camera_0 = camera_0_flat.reshape(3, 240, 320)
 
-                # 将 ObsData 消息转换为字典格式
+                # 将 status_data 消息转换为字典格式
                 req = {
                     'obs': {
                         'camera_0': camera_0,  # 图像数据已经是列表格式
@@ -370,6 +326,6 @@ def main(ckpt_path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--ckpt-path', default='data/outputs/2025.01.20/23.12.24_train_diffusion_unet_image_real_image/checkpoints/latest.ckpt')
+    parser.add_argument('--ckpt-path', default='data/outputs/zhuaqu/latest.ckpt')
     args = parser.parse_args()
     main(args.ckpt_path)

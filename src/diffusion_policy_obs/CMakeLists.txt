@@ -60,7 +60,7 @@ add_message_files(
   joint_vel.msg
   obsdata.msg
   cameradata.msg
-  ObsData.msg
+  status_data.msg
 )
 
 ## Generate services in the 'srv' folder

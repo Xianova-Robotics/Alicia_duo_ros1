@@ -33,13 +33,15 @@ mamba env create -f environment.yml
 sudo apt install git
 
 下载基础工程
-git clone <https://github.com/Xianova-Robotics/Alicia_duo_ros>
+git clone <https://gitee.com/xuanyatech/Alicia_duo_ros.git>
 
 编译工程
 cd Alicia_duo_ros
 catkin_make
 
 把ROS工程加载进环境变量
+vim ~/.bashrc
+把下面这句添加进最后一行
 source ~/Alicia_duo_ros/devel/setup.bash        
 ```
 
@@ -74,9 +76,8 @@ DP/
 │   │   ├── train_diffusion_unet_image_workspace.yaml # 训练配置文件
 │   │   └── ……
 ├── multi_camera_real_robot_async.py # 异步控制机械臂
-├── multi_camera_real_robot_sync.py # 同步控制机械臂
-├── real_robot_copy.py
-├── real_robot.py
+├── multi_camera_real_robot_sync.py  # 多相机同步控制机械臂
+├── single_camera_real_robot_sync.py # 单相机同步控制机械臂
 ├── train.py # 训练模型
 ├── zarr_viz.py # 测试数据集的准确性
 └── ……

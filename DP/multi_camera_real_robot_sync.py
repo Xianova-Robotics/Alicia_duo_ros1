@@ -21,19 +21,18 @@ import cv2
 import sys
 import os
 
-# 添加 diffusion_policy 的路径
-diffusion_policy_path = os.path.abspath("/home/xuanya/eto/diffusion_policy")
-if diffusion_policy_path not in sys.path:
-    sys.path.append(diffusion_policy_path)
+# # 添加 diffusion_policy 的路径
+# diffusion_policy_path = os.path.abspath("DP/diffusion_policy")
+# if diffusion_policy_path not in sys.path:
+#     sys.path.append(diffusion_policy_path)
 
 from diffusion_policy.common.pytorch_util import dict_apply
 from diffusion_policy.model.common.rotation_transformer import RotationTransformer
 
-
 import rospy
 import numpy as np
 from diffusion_policy_obs.srv import ProcessData, ProcessDataRequest
-from diffusion_policy_obs.msg import ObsData
+from diffusion_policy_obs.msg import status_data
 from frame_msgs.msg import set_servo_as
 
 POLICY_CONTROL_PERIOD = 0.1  # 100 ms (10 Hz)
@@ -256,7 +255,7 @@ def call_process_data_service(server):
                 # 将展平的数据恢复为 (3, 240, 320) 的形状
                 camera_2 = camera_2_flat.reshape(3, 240, 320)
 
-                # 将 ObsData 消息转换为字典格式
+                # 将消息转换为字典格式
                 req = {
                     'obs': {
                         'camera_0': camera_0,  # 图像数据已经是列表格式
