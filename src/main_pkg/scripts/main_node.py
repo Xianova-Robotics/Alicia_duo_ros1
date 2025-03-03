@@ -26,15 +26,17 @@ class MainNode:
         self.msg.servo_target_cycle.layout.dim.append(self.dim)
 
         self.servo_angle_data = [initial_value] * (self.servo_control_num + 1)
+        self.servo_angle_data2 = [initial_value] * (self.servo_control_num + 1)
         
         # 以一定频率订阅串口数据话题
         self.sub_states = rospy.Subscriber('servo_states_main', Float32MultiArray, self.main_servo_states_callback)
+        self.sub_states6 = rospy.Subscriber('servo_states6_main', Float32MultiArray, self.main_servo_states6_callback)
 
         self.pub= rospy.Publisher('main_control_servo', set_servo_as, queue_size=10)    ## main_pkg 中整合
 
         ## 测试用
-        self.servo_target_angle     = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        self.servo_target_angle_2   = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.servo_target_angle     = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 30.0]
+        self.servo_target_angle_2   = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -30.0]
         self.servo_target_cycle     = [1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0]
         self.gripper_angle1         = 0.0
         self.gripper_angle2         = 100.0
@@ -53,7 +55,37 @@ class MainNode:
 
         ## 显示角度
         for i in range(self.servo_control_num + 1):
-            print(f"---->当前{i + 1}号电机角度为: {self.servo_angle_data[i]:.2f}")
+            if(i != self.servo_control_num):
+                print(f"---->当前{i + 1}号电机角度为: {self.servo_angle_data[i]:.2f}")
+            else:
+                print(f"---->当前pwm舵机角度为: {self.servo_angle_data[i]:.2f}")
+
+    def main_servo_states6_callback(self, servo_angle_msg):
+        """
+            @brief 舵机状态数据回调函数
+
+            @param servo_angle_msg: 舵机状态数据
+        """
+        if len(servo_angle_msg.data) != self.servo_control_num + 1 + 1:
+            print(f"main中接收的舵机数量与设定的舵机数量不一致{servo_angle_msg.data}!!\n")
+            return 1
+
+        if(servo_angle_msg.data[self.servo_control_num + 1] == 0x01):
+            self.servo_angle_data = servo_angle_msg.data[:-1]
+            ## 显示角度
+            for i in range(self.servo_control_num + 1):
+                if(i != self.servo_control_num):
+                    print(f"---->当前{i + 1}号电机角度为: {self.servo_angle_data[i]:.2f}")
+                else:
+                    print(f"---->当前pwm舵机角度为: {self.servo_angle_data[i]:.2f}")
+        elif(servo_angle_msg.data[self.servo_control_num + 1] == 0x02):
+            self.servo_angle_data2 = servo_angle_msg.data[:-1]
+            ## 显示角度
+            for i in range(self.servo_control_num + 1, self.servo_control_num + 1 + 8):
+                if(i != self.servo_control_num + 1 + 8 - 2 - 1):
+                    print(f"---->当前{i}号电机角度为: {self.servo_angle_data[i - 8]:.2f}")
+                else:
+                    print(f"---->当前pwm舵机角度为: {self.servo_angle_data[i - 8]:.2f}")
 
     def main_control_servo(self, servo_angle_buf, servo_angle_cycle, gripper_angle):
         """
@@ -72,6 +104,25 @@ class MainNode:
         self.msg.gripper_angle.data      = gripper_angle
 
         self.pub.publish(self.msg)
+
+    def main_control6_servo(self, servo_angle_buf, servo_angle_cycle, gripper_angle, servo_type):
+        """
+            @brief 发送控制舵机数据
+
+            @param servo_angle_buf: 舵机角度数据Float32MultiArray类型
+            @param servo_angle_cycle: 舵机周期数据Float32MultiArray类型
+        """
+        for i in range(self.servo_control_id_min, self.servo_control_id_max):
+            if servo_angle_buf[i] > 180.0 or servo_angle_buf[i] < -180.0:
+                print("舵机角度超出范围!!\n")
+                return 1
+
+        self.msg.servo_type_4.data       = servo_type
+        self.msg.servo_target_angle.data = servo_angle_buf
+        self.msg.servo_target_cycle.data = servo_angle_cycle
+        self.msg.gripper_angle.data      = gripper_angle
+
+        self.pub.publish(self.msg)
     
     def dis_all_servo_angle(self):
         """
@@ -84,10 +135,21 @@ class MainNode:
 def demo_thread(node):
     try:
         while not rospy.is_shutdown():
-            # node.main_control_servo(node.servo_target_angle, node.servo_target_cycle, node.gripper_angle1)
-            # time.sleep(2)
-            # node.main_control_servo(node.servo_target_angle_2, node.servo_target_cycle, node.gripper_angle2)
-            time.sleep(2)
+            '''
+            node.main_control6_servo(node.servo_target_angle, node.servo_target_cycle, node.gripper_angle1)
+            time.sleep(6)
+            node.main_control6_servo(node.servo_target_angle_2, node.servo_target_cycle, node.gripper_angle2)
+            time.sleep(6)
+            '''
+
+            node.main_control6_servo(node.servo_target_angle, node.servo_target_cycle, node.gripper_angle1, 0x01)
+            time.sleep(1)
+            node.main_control6_servo(node.servo_target_angle_2, node.servo_target_cycle, node.gripper_angle2, 0x02)
+            time.sleep(5)
+            node.main_control6_servo(node.servo_target_angle, node.servo_target_cycle, node.gripper_angle1, 0x01)
+            time.sleep(1)
+            node.main_control6_servo(node.servo_target_angle_2, node.servo_target_cycle, node.gripper_angle2, 0x02)
+            time.sleep(5)
     except KeyboardInterrupt:
         print("程序退出ed.\n")
         sys.exit(0)

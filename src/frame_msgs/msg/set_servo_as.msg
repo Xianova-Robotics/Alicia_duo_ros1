@@ -1,3 +1,4 @@
+std_msgs/Float32 servo_type_4
 std_msgs/Float32MultiArray servo_target_angle
 std_msgs/Float32MultiArray servo_target_cycle
 std_msgs/Float32 gripper_angle

@@ -1,0 +1,8 @@
+prefix=/home/eonfb/Alicia_duo_ros/devel
+
+Name: error_frame_deal_pkg
+Description: Description of error_frame_deal_pkg
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

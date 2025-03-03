@@ -46,14 +46,18 @@ class ServoStatesNode:
         self.dim.stride  = 1                                                                        ## 数组只有一个维度
         self.msg.layout.dim.append(self.dim)
         self.servo_angle_data = [0.0] * self.servo_control_num
+        self.servo_angle_data2 = [0.0] * (self.servo_control_num + 1)
 
         self.gripper_angle = 0
+        self.gripper_angle2 = 0
         
         self.pub_main_f = rospy.Publisher('servo_states_main', Float32MultiArray, queue_size=10)    ## main_pkg 中整合
+        self.pub_main_f6 = rospy.Publisher('servo_states6_main', Float32MultiArray, queue_size=10)    ## main_pkg 中整合
         # 以一定频率订阅串口数据话题
         self._last_call_time = 0
         self.rate_limit = 0.001  # s级间隔
         self.subscriber = rospy.Subscriber('servo_states', UInt8MultiArray, self.servo_states_callback)
+        self.subscriber_6 = rospy.Subscriber('servo_states_6', UInt8MultiArray, self.servo_states6_callback)
         self.sub_gripper = rospy.Subscriber('gripper_angle', Int32, self.gripper_angle_callback)
 
     def servo_states_callback(self, servo_states_msg):
@@ -75,7 +79,7 @@ class ServoStatesNode:
             
             ## 存储舵机角度数据
             for i in range(self.servo_control_id_min, self.servo_control_id_max): ## 不包括终止数
-                self.servo_angle_data[i] = Hxj_angle_scale(u8_array_to_float(servo_states_msg.data[3+i*2:3+i*2+2]), 0)
+                self.servo_angle_data[i] = u8_array_to_float(servo_states_msg.data[3+i*2:3+i*2+2])
 
             self.servo_angle_data[self.servo_control_num - 1] = float(self.gripper_angle)
             self.msg.data = self.servo_angle_data
@@ -85,6 +89,47 @@ class ServoStatesNode:
             #     print(f"{i + 1}, {self.msg.data[i]:.2f}")
 
             self.pub_main_f.publish(self.msg)
+
+    def servo_states6_callback(self, servo_states6_msg):
+        """
+            @brief 舵机角度数据回调函数
+
+            @param serial_msg: 串口数据
+        """
+        ## 节流
+        # print_hex_frame(servo_states6_msg.data)
+        current_time = time.time()
+        if current_time - self._last_call_time >= self.rate_limit:
+            self._last_call_time = current_time
+
+            ## 处理数据 is not 是用于比较是否是相同的内存地址
+            if (servo_states6_msg.data[2]-1)/2 != self.servo_control_num - 1:
+                print(f"servo_states6_callback()接收的舵机数量与设定的舵机数量不一致{servo_states6_msg.data[2]/2 - 1} != {self.servo_control_num - 1}!!\n")
+                return 1
+                
+            ## 存储舵机角度数据
+            if(servo_states6_msg.data[3] == 0x01):
+                for i in range(self.servo_control_id_min, self.servo_control_id_max): ## 不包括终止数
+                    self.servo_angle_data2[i] = u8_array_to_float(servo_states6_msg.data[4+i*2:4+i*2+2])
+                self.servo_angle_data2[self.servo_control_num - 1] = float(self.gripper_angle)
+                self.servo_angle_data2[self.servo_control_num] = servo_states6_msg.data[3]
+            elif(servo_states6_msg.data[3] == 0x02):
+                for i in range(self.servo_control_id_min, self.servo_control_id_max): ## 不包括终止数
+                    self.servo_angle_data2[i] = u8_array_to_float(servo_states6_msg.data[4+i*2:4+i*2+2])
+                self.servo_angle_data2[self.servo_control_num - 1] = float(self.gripper_angle)
+                self.servo_angle_data2[self.servo_control_num] = servo_states6_msg.data[3]
+
+            self.msg.data = self.servo_angle_data2
+
+            # if(servo_states6_msg.data[3] == 0x01):
+            #     for i in range(self.servo_control_num):
+            #         print(f"{i + 1}, {self.msg.data[i]:.2f}")   
+            # elif(servo_states6_msg.data[3] == 0x02):
+            #     ## 显示角度
+            #     for i in range(self.servo_control_num):
+            #         print(f"{i + 8}, {self.msg.data[i]:.2f}")
+
+            self.pub_main_f6.publish(self.msg)
     
     def gripper_angle_callback(self, gripper_angle_msg):
         """
