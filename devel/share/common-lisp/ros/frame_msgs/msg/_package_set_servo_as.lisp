@@ -1,0 +1,16 @@
+(cl:in-package frame_msgs-msg)
+(cl:export '(SERVO_TYPE_4-VAL
+          SERVO_TYPE_4
+          SERVO_TARGET_ANGLE-VAL
+          SERVO_TARGET_ANGLE
+          SERVO_TARGET_CYCLE-VAL
+          SERVO_TARGET_CYCLE
+          GRIPPER_ANGLE-VAL
+          GRIPPER_ANGLE
+          SERVO_TARGET_ANGLE_U8-VAL
+          SERVO_TARGET_ANGLE_U8
+          SERVO_TARGET_CYCLE_U8-VAL
+          SERVO_TARGET_CYCLE_U8
+          GRIPPER_ANGLE_U8-VAL
+          GRIPPER_ANGLE_U8
+))

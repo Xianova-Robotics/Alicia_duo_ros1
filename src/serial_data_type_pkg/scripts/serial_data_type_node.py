@@ -34,6 +34,7 @@ class SerialReaderNode:
         # 用 self 表明它是类变量，而不是一个局部变量或全局变量
         self.pub_2 = rospy.Publisher('gripper_angle', Int32, queue_size=10)
         self.pub_4 = rospy.Publisher('servo_states', UInt8MultiArray, queue_size=10)
+        self.pub_6 = rospy.Publisher('servo_states_6', UInt8MultiArray, queue_size=10)
         self.pub_EE = rospy.Publisher('error_frame_deal', UInt8MultiArray, queue_size=10)
         
         # 订阅串口数据话题, 对于类中的回调函数要用 self 表明，且会自动传递 self
@@ -53,6 +54,8 @@ class SerialReaderNode:
         elif command == 0x04:
             self.pub_4.publish(serial_msg)
             # print_hex_frame(serial_msg.data)
+        elif command == 0x06:
+            self.pub_6.publish(serial_msg)
         elif command == 0xEE:
             self.pub_EE.publish(serial_msg)
             print("%2X 有话题，但暂时无接收处理\n")

@@ -19,7 +19,7 @@ def find_serial_ports():
 
         @return 返回包含所有可用串口名称的列表的第一个
     """
-    return [port.device for port in serial.tools.list_ports.comports()][1]
+    return [port.device for port in serial.tools.list_ports.comports()][0]
 
 def monitor_serial_ports():
     """
@@ -86,7 +86,7 @@ def print_hex_frame(frame_msg, num):
 
         @param frame_msg 整数数组
     """
-    if num:
+    if num == 0:
         hex_output = "发送数据:"
     elif num == 1:
         hex_output = "数据接收:"
@@ -150,11 +150,11 @@ def read_frame(ser, pub):
                             msg.data = np.array(frame_msg, dtype=np.uint8) # NumPy 数组
                             msg.data = msg.data.tolist()            # 将 NumPy 数组转换为列表
 
-                            # print_hex_frame(msg.data, 1)
+                            print_hex_frame(msg.data, 1)
 
                             pub.publish(msg)                        ## /* 完整帧Topic传递 */
                             state = True
-                            ser.reset_input_buffer()
+                            # ser.reset_input_buffer()
                     elif expected_length > 64 or len(frame_msg) > 64:    # 如果帧长度超过64字节，则认为帧错误
                         state = True
     except KeyboardInterrupt:
@@ -193,7 +193,7 @@ def send_serial_data_callback(serial_data):
 
     try:
         ser.write(byte_data)
-        print_hex_frame(serial_data.data, 2)
+        print_hex_frame(serial_data.data, 0)
     except serial.SerialException as e:
         print(f"串口发送数据失败: {e}")
         sys.exit(1)
@@ -229,11 +229,11 @@ def main():
                 ser.close()
 
 if __name__ == '__main__':
-    try:
+    # try:
         main()
-    finally:
-        if ser is not None:
-            if ser.is_open:
-                ser.close()
-        print("serial_server_node exit")
-        sys.exit(0)
+    # finally:
+    #     if ser is not None:
+    #         if ser.is_open:
+    #             ser.close()
+    #     print("serial_server_node exit")
+    #     sys.exit(0)
