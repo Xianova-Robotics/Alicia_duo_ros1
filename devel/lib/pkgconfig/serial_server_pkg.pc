@@ -1,8 +1,0 @@
-prefix=/home/eonfb/Alicia_duo_ros/devel
-
-Name: serial_server_pkg
-Description: Description of serial_server_pkg
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
