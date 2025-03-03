@@ -1,3 +1,5 @@
+# 灵动 Alicia Duo 系列遥操作模仿学习数据采集平台
+
 ![输入图片说明](imgs/Alicia_duo4.jpg)
 
 ## 环境安装
