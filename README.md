@@ -1,3 +1,5 @@
+![输入图片说明](imgs/Alicia_duo4.jpg)
+
 ## 环境安装
 
 **配置Linux基础依赖**
