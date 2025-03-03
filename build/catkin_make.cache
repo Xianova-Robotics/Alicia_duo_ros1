@@ -1,2 +1,0 @@
-error_frame_deal_pkg:frame_msgs:main_pkg:serial_data_type_pkg:serial_server_pkg:servo_control_pkg:servo_states_pkg
--DCATKIN_DEVEL_PREFIX=/home/eonfb/Alicia_duo_ros/devel -DCMAKE_INSTALL_PREFIX=/home/eonfb/Alicia_duo_ros/install -G Unix Makefiles

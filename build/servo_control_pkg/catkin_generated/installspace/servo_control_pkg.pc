@@ -1,8 +1,0 @@
-prefix=/home/eonfb/Alicia_duo_ros/install
-
-Name: servo_control_pkg
-Description: Description of servo_control_pkg
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
