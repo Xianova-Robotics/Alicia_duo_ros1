@@ -1,9 +1,0 @@
-<launch>
-    <node pkg="serial_server_pkg" type="serial_server_node.py" name="serial_server_node" output="screen"/>
-    
-    <node pkg="serial_data_type_pkg" type="serial_data_type_node.py" name="serial_data_type_node" output="screen"/>
-    <node pkg="servo_states_pkg" type="servo_states_node.py" name="servo_states_node" output="screen"/>
-    <node pkg="error_frame_deal_pkg" type="error_frame_deal_node.py" name="error_frame_deal_node" output="screen"/>
-    <node pkg="servo_control_pkg" type="servo_control_node.py" name="servo_control_node" output="screen"/>
-    <!-- <node pkg="main_pkg" type="main_node.py" name="main_node" output="screen"/> -->
-</launch>

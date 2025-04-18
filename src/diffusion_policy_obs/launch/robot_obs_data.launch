@@ -1,7 +1,0 @@
-<launch>
-    <include file="$(find main_pkg)/launch/main.launch" />
-    
-    <!-- Launch the robot_obs_data node -->
-    <node name="robot_obs_data" pkg="diffusion_policy_obs" type="robot_obs_data.py" output="screen" />
-    <!-- <node name="data_saver_node" pkg="diffusion_policy_obs" type="get_data.py" output="screen" /> -->
-</launch>

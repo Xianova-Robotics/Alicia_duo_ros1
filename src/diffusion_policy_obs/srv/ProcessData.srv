@@ -1,5 +1,0 @@
-# ProcessData.srv
-ObsData data  # 请求部分
----
-bool success  # 响应部分
-ObsData data  # 响应部分
