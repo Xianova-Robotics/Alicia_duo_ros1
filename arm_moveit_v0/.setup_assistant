@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: alicia_duo_v5_03
+    relative_path: urdf/v1.urdf
+    xacro_args: ""
+  SRDF:
+    relative_path: config/alicia_duo_v5_03.srdf
+  CONFIG:
+    author_name: d
+    author_email: d@gmail.com
+    generated_timestamp: 1744861888

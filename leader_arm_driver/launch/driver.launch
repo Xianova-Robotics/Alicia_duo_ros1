@@ -1,0 +1,16 @@
+<launch>
+  <!-- Load robot description -->
+  <param name="robot_description" textfile="$(find alicia_duo_v5_03)/urdf/alicia_duo_v5_03_tiny.urdf" />
+  <!-- <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" /> -->
+  <!-- Your joint state publisher node -->
+  <!-- <node name="manipulator_joint_publisher" pkg="leader_arm_driver" type="leader_joint_publisher.py" output="screen" /> -->
+  <node name="manipulator_joint_publisher" pkg="leader_arm_driver" type="leader_joint_publisher_node" output="screen" />
+
+  <!-- Run robot_state_publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+  <node name="leader_joint_listener" pkg="leader_arm_driver" type="leader_joint_listener_node" output="screen" />
+
+  <!-- RViz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find leader_arm_driver)/rviz/leader_config.rviz" required="true" />
+</launch>
