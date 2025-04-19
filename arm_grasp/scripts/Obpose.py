@@ -5,7 +5,9 @@ import numpy as np
 from geometry_msgs.msg import Point
 from tf.transformations import quaternion_matrix
 import os
-
+import tf2_ros
+import geometry_msgs.msg
+import tf_conversions
 
 class ObjectPoseTransformer:
     def __init__(self):
@@ -16,6 +18,7 @@ class ObjectPoseTransformer:
         transform_matrix = self.load_transform_from_yaml()
         self.transform_matrix = transform_matrix
         self.latest_pose = None
+        self.tf_broadcaster = tf2_ros.TransformBroadcaster()
         rospy.Subscriber("/detected_object_position", Point, self.callback)
         rospy.loginfo("ObjectPoseTransformer initialized. Waiting for detected object position...")
 
@@ -42,6 +45,26 @@ class ObjectPoseTransformer:
             rospy.logerr("Failed to load transformation from YAML: %s", str(e))
             rospy.signal_shutdown("Failed to load calibration data.")
             return np.identity(4)
+
+
+    def publish_object_tf(self, obj_pos):
+        t = geometry_msgs.msg.TransformStamped()
+        t.header.stamp = rospy.Time.now()
+        t.header.frame_id = "world"  # or "base_link" if that’s your base
+        t.child_frame_id = "detected_object"
+
+        t.transform.translation.x = obj_pos[0]
+        t.transform.translation.y = obj_pos[1]
+        t.transform.translation.z = obj_pos[2]
+
+        quat = tf_conversions.transformations.quaternion_from_euler(0, 0, 0)
+        t.transform.rotation.x = quat[0]
+        t.transform.rotation.y = quat[1]
+        t.transform.rotation.z = quat[2]
+        t.transform.rotation.w = quat[3]
+
+        self.tf_broadcaster.sendTransform(t)
+
 
     def _create_transform(self, trans, rot):
         """Create 4x4 homogeneous transform matrix from translation and quaternion."""
@@ -83,6 +106,8 @@ class ObjectPoseTransformer:
         
         # 更新并记录结果
         self.latest_pose = obj_robot[:3]
+        self.publish_object_tf(self.latest_pose)  # pubulish object tf
+
         # rospy.loginfo_throttle(1.0, "Optical frame: x=%.3f y=%.3f z=%.3f", msg.x, msg.y, msg.z)
         # rospy.loginfo_throttle(1.0, "Robot frame:  x=%.3f y=%.3f z=%.3f", *obj_robot[:3])
         

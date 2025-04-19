@@ -8,6 +8,7 @@ controller_list:
       - Joint04
       - Joint05
       - Joint06
+      - Grip_control
   - name: fake_gripper_controller
     type: $(arg fake_execution_type)
     joints:

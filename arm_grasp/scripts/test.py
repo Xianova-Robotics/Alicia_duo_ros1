@@ -1,3 +1,36 @@
+
+
+###############################
+#    Inverse Kinematics       #
+###############################
+from tf.transformations import quaternion_from_euler
+from Robolab_main import robolab
+
+obj_pose = [0.22433333,  0.12029027, -0.02354876]
+print("########## Inverse kinematics from URDF or MuJoCo XML files with RobotModel class ##########")
+print("---------- Inverse kinematics for Franka Panda using URDF file ----------")
+model_path = "/home/xuanya/demo_ws/src/alicia_duo_v5_03/urdf/v1.urdf"
+q = quaternion_from_euler(3.1416, 0, 0)  # roll 180 degrees
+print(q)
+ee_pose = [0.22433333,  0.12029027, -0.02354876, q[0], q[1], q[2]]
+export_link = "tcp_link"
+robot = robolab.RobotModel(model_path, solve_engine="pytorch_kinematics", verbose=True)
+
+# Get ik solution
+ret = robot.get_ik(ee_pose, export_link)
+print(ret.solutions)
+
+# Get ik solution near the current configuration
+cur_configs = [[-1.7613, 2.7469, -3.5611, -3.8847, 2.7940, 1.9055, 1.9879]]
+ret = robot.get_ik(ee_pose, export_link, cur_configs=cur_configs)
+print(ret.solutions)
+
+
+
+##################################
+#Object Detection In World Frame #
+##################################
+"""
 import numpy as np
 from scipy.spatial.transform import Rotation
 
@@ -26,26 +59,7 @@ T_optical_to_arm = T_link_to_arm @ T_optical_to_link
 obj_arm = T_optical_to_arm @ obj_camera_optical
 
 print("物体在世界坐标系中的位置 (x, y, z):", obj_arm[:3])
-
-# import numpy as np
-# from tf.transformations import quaternion_matrix
-
-# # Calibration data
-# translation = [0.3386691856301935, 0.010932772403258913, 0.4555244933727863]
-# quaternion = [-0.6750318965095816, -0.02152222698097017, 0.7358861331826768, 0.048376972103515964]  # x, y, z, w
-
-# # Build transformation matrix from camera to world
-# T_world_camera = quaternion_matrix(quaternion)
-# T_world_camera[:3, 3] = translation
-
-# # Object pose in camera frame
-# obj_camera = np.array([0.016, 0.014, 0.496, 1.0])
-
-# # Transform to world frame
-# obj_world = T_world_camera @ obj_camera
-# x_w, y_w, z_w = obj_world[:3]
-
-# print(f"Object in world frame:\n  x = {x_w:.4f} m\n  y = {y_w:.4f} m\n  z = {z_w:.4f} m")
+"""
 
 
 ################################
