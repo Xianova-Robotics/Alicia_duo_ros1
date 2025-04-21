@@ -85,7 +85,6 @@ class ServoControlNode:
         self.joint_sub = rospy.Subscriber('/arm_joint_command', ArmJointState, self.joint_command_callback, queue_size=10)
     
         self.gripper_sub = rospy.Subscriber('/gripper_control', Float32, self.gripper_control_callback, queue_size=10)
-        
     def calculate_checksum(self, frame):
         """计算校验和"""
         # 计算索引3到倒数第2个元素的总和，对2取模
