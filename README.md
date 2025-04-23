@@ -44,4 +44,4 @@ Alicia Duo 是一款多功能机械臂，设计用于多种应用场景。其模
 ## 安装
 
 `install` 目录包含安装脚本：
-- **`alicia_amd64_install.sh`**: 用于在 AMD64 架构上设置 Alicia Duo ROS 环境的脚本。
+- **`alicia_amd64_install.sh`**: 基于ROS Noetic设置 Alicia Duo ROS 环境的脚本。
