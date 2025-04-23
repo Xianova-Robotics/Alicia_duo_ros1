@@ -1,6 +1,6 @@
 # 灵动 Alicia Duo 系列机械臂
 
-![输入图片说明](images/Alicia_duo4.jpg)
+![输入图片说明](images/IMG_7591.png)
 
 ## 仓库结构
 
