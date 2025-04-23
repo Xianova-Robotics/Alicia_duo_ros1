@@ -1,0 +1,36 @@
+<launch>
+  <!-- Load robot description -->
+  <param name="robot_description" textfile="$(find alicia_duo_descriptions)/urdf/alicia_gripper.urdf" />
+  <!-- Load the camera and calibration result -->
+  <param name="camera_load" value="false" />
+  <!-- Load controller configuration -->
+  <rosparam file="$(find alicia_duo_moveit)/config/ros_controllers.yaml" command="load" />
+
+  <!-- Load the controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+        output="screen" args="joint_state_controller arm_pos_controller gripper_controller"/>
+
+  <!-- Robot State Publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+  <!-- Hardware Interface -->
+  <node name="alicia_hardware_interface_node" pkg="alicia_duo_ros_control" type="hardware_interface_node" output="screen" />
+
+  <!-- MoveIt -->
+  <include file="$(find alicia_duo_moveit)/launch/move_group.launch">
+    <arg name="load_robot_description" value="false"/>
+  </include>
+
+  <!-- RViz -->
+  <include file="$(find alicia_duo_moveit)/launch/moveit_rviz.launch">
+    <arg name="rviz_config" value="$(find alicia_duo_moveit)/config/alicia_rviz.rviz"/>
+  </include>
+
+  <!-- Include the calibration result only when camera_load = true-->
+  <if condition="$(param camera_load)">
+    <include file="$(find easy_handeye)/launch/publish.launch">
+      <arg name="namespace_prefix" value="Alicia_usb_handeyecalibration"/>
+    </include>
+  </if>
+
+</launch>
