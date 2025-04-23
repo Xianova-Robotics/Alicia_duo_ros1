@@ -1,6 +1,6 @@
 # 灵动 Alicia Duo 系列机械臂
 
-![输入图片说明](images/IMG_7591.png)
+![](images/IMG_7591.png)
 
 ## 仓库结构
 
@@ -19,6 +19,8 @@
 ---
 
 ## 描述
+
+![](images/IMG_7592.png)
 
 ### 机械臂类型：Alicia Duo
 Alicia Duo 是一款多功能机械臂，设计用于多种应用场景。其模块化架构使其易于与 ROS 集成。
