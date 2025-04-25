@@ -6,7 +6,7 @@
 
 该仓库包含多个目录，每个目录包含与 Alicia Duo 机械臂相关的 ROS 包和资源。以下是仓库的结构：
 ```
-├── alicia_duo_caliration
+├── alicia_duo_calibration
 ├── alicia_duo_descriptions
 ├── alicia_duo_drag_teaching
 ├── alicia_duo_driver
@@ -31,7 +31,7 @@ Alicia Duo 是一款多功能机械臂，设计用于多种应用场景。其模
 - **`alicia_duo_moveit`**: 配置机械臂以使用 MoveIt 进行运动规划和控制。
 - **`alicia_duo_ros_control`**: 实现机械臂的 ROS 控制接口。
 - **`alicia_duo_descriptions`**: 包含机械臂的 URDF 和网格文件，用于在 RViz 中可视化。
-- **`alicia_duo_caliration`**: 提供手眼标定和其他校准工具。
+- **`alicia_duo_calibration`**: 提供手眼标定和其他校准工具。
 
 ### 示例机械臂 ROS 包
 这些包基于核心包，展示了特定功能：
@@ -47,3 +47,12 @@ Alicia Duo 是一款多功能机械臂，设计用于多种应用场景。其模
 
 `install` 目录包含安装脚本：
 - **`alicia_amd64_install.sh`**: 基于ROS Noetic设置 Alicia Duo ROS 环境的脚本。
+
+
+---
+## 链接
+
+- **淘宝店铺**: [Alicia Duo 官方淘宝店](https://g84gtpygdv6trpvdhcsy0kfr73avcip.taobao.com/shop/view_shop.htm?appUid=RAzN8HWKU5B7MfX6JjEWgkuNfftNVbnrjbjx6fPjY9KqXB46Rvy&spm=a21n57.1.hoverItem.2)
+- **产品手册**: [Alicia Duo 产品手册](https://tcnqzgyay0jb.feishu.cn/wiki/DGtywN4j8ikctwk6PoccULllnkb)
+
+---
