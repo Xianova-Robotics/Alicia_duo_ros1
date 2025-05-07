@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: alicia_duo_descriptions
+    relative_path: urdf/alicia_gripper.urdf
+    xacro_args: ""
+  SRDF:
+    relative_path: config/alicia_duo_descriptions.srdf
+  CONFIG:
+    author_name: d
+    author_email: d@gmail.com
+    generated_timestamp: 1745042604

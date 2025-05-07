@@ -1,0 +1,35 @@
+controller_list:
+  - name: arm_pos_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - Joint01
+      - Joint02
+      - Joint03
+      - Joint04
+      - Joint05
+      - Joint06
+  - name: gripper_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - Grip_control
+  - name: arm_pos_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - Joint01
+      - Joint02
+      - Joint03
+      - Joint04
+      - Joint05
+      - Joint06
+  - name: gripper_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - Grip_control
