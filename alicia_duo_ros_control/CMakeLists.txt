@@ -13,7 +13,6 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   geometry_msgs
   tf
-  frame_msgs
   message_generation  # Add message_generation for custom messages
   alicia_duo_driver  # Add the dependency for serial_server_node
 )
@@ -27,7 +26,7 @@ generate_messages(
 
 ## Declare the package
 catkin_package(
-  CATKIN_DEPENDS roscpp std_msgs frame_msgs message_runtime alicia_duo_driver  # message_runtime for custom message generation
+  CATKIN_DEPENDS roscpp std_msgs message_runtime alicia_duo_driver  # message_runtime for custom message generation
 )
 
 ###########
