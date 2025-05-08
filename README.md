@@ -53,6 +53,6 @@ Alicia Duo 是一款多功能机械臂，设计用于多种应用场景。其模
 ## 链接
 
 - **淘宝店铺**: [Alicia Duo 官方淘宝店](https://g84gtpygdv6trpvdhcsy0kfr73avcip.taobao.com/shop/view_shop.htm?appUid=RAzN8HWKU5B7MfX6JjEWgkuNfftNVbnrjbjx6fPjY9KqXB46Rvy&spm=a21n57.1.hoverItem.2)
-- **产品手册**: [Alicia Duo 产品手册](https://tcnqzgyay0jb.feishu.cn/wiki/DGtywN4j8ikctwk6PoccULllnkb)
+- **产品手册**: [Alicia Duo 产品手册](https://tcnqzgyay0jb.feishu.cn/wiki/ElDUwERlNilPLWkJ2e2cYGyZncb?fromScene=spaceOverview)
 
 ---
