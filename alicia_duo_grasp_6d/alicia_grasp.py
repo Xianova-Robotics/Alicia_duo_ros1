@@ -82,40 +82,13 @@ def camera2base(t_optical2object, R_optical2object):
     """
     tf_buffer = tf2_ros.Buffer()
     rospy.loginfo("Calculating target grasp pose...")
-    # T_camera2object = np.eye(4)
-    # T_camera2object[:3, :3] = R_optical2object
-    # T_camera2object[:3, 3]  = t_optical2object
-    # calib_qx, calib_qy, calib_qz, calib_qw = -0.6897944476918475,  -0.6709242922201382,  0.22122647083854374,  0.15843946049746654
-    # calib_tx, calib_ty, calib_tz = 0.5257534424665639, 0.14313662140505584, 0.4665881945993664
-
-    # T_arm2camera = np.eye(4)
-    # T_arm2camera[:4, :4] = quaternion_matrix([calib_qx,calib_qy , calib_qz, calib_qw])
-    # T_arm2camera[0, 3] = calib_tx
-    # T_arm2camera[1, 3] = calib_ty
-    # T_arm2camera[2, 3] = calib_tz
-    # T_arm2object = np.dot(T_arm2camera, T_camera2object)
-    # # 从最终变换矩阵里提取出平移和四元数
-    # t_arm2object = T_arm2object[:3, 3]
-    # q_arm2object = quaternion_from_matrix(T_arm2object)
 
     # --- 1. Create Object Pose in Optical Frame ---
     T_optical2object = np.eye(4)
     T_optical2object[:3, :3] = R_optical2object
     T_optical2object[:3, 3] = t_optical2object
     rospy.loginfo(f"Input T_optical2object:\n{T_optical2object}")
-    
-    # --- 2. Define Optical Frame to Camera Link Transform ---
-    # Standard transformation from optical frame to camera link
-    # R_optical_to_link = np.array([
-    #     [0, 0, 1, 0],
-    #     [-1, 0, 0, 0],
-    #     [0, -1, 0, 0],
-    #     [0, 0, 0, 1]
-    # ])
-    
-    # # --- 3. Apply Optical to Link transform ---
-    # T_link2object = np.dot(R_optical_to_link, T_optical2object)
-    # rospy.loginfo(f"Transformed to camera link frame:\n{T_link2object}")
+
     T_link2object = T_optical2object
 
     # --- 4. Load Camera to Base Transformation ---
@@ -350,25 +323,11 @@ def data_process():
     print("camera info", camera)
     print("camera scale", camera.scale) 
     
-
-    # color_height, color_width = rgb.shape[:2]
-    # depth_height, depth_width = depth.shape[:2]
-    
-    # # Print dimensions for debugging
-    # print(f"Color image dimensions: {color_width}x{color_height}")
-    # print(f"Depth image dimensions: {depth_width}x{depth_height}")
     
     if len(clicked_points) >= 2:
         # Use first point as left_up and second as right_bottom
         x_left_up, y_left_up = clicked_points[0]
         x_right_bottom, y_right_bottom = clicked_points[1]
-                # Scale points if the dimensions don't match
-        # if color_height != depth_height or color_width != depth_width:
-        #     x_left_up = int(x_left_up * depth_width / color_width)
-        #     y_left_up = int(y_left_up * depth_height / color_height)
-        #     x_right_bottom = int(x_right_bottom * depth_width / color_width)
-        #     y_right_bottom = int(y_right_bottom * depth_height / color_height)
-        #     print(f"Scaled points: ({x_left_up},{y_left_up}), ({x_right_bottom},{y_right_bottom})")
         
     else:
         # Use defaults but with correct ordering

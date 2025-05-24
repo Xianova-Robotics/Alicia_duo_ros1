@@ -76,7 +76,7 @@ class GraspController:
         current_pose = self.robot_controller.get_current_pose()
         rospy.loginfo("target_pose")
         rospy.loginfo(target_pose)
-        current_pose.position.z = target_pose.position.z - 0.03 # 向下移动 5cm
+        current_pose.position.z = target_pose.position.z
 
         if not self.robot_controller.move_to_pose(current_pose):
             rospy.logerr("Successfully moved to target pose!")
