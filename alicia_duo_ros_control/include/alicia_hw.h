@@ -6,14 +6,15 @@
 #include <hardware_interface/robot_hw.h>
 #include <controller_manager/controller_manager.h>
 #include "serial_comm_helper.h"
-
+#include <control_msgs/JointTrajectoryControllerState.h> // For controller state
+#include <mutex>          
 class MyRobotHW : public hardware_interface::RobotHW
 {
 public:
     explicit MyRobotHW(ros::NodeHandle& nh);
     // ~MyRobotHW() = default;
     // virtual ~MyRobotHW() = default;
-    virtual ~MyRobotHW();  // ✅ correct declaration for the .cpp file
+    virtual ~MyRobotHW();  
 
 
     bool init(ros::NodeHandle& root_nh, ros::NodeHandle &robot_hw_nh);
@@ -27,6 +28,7 @@ public:
     // Setters for sending commands
     void setJointCommands(const std::vector<double>& positions);
     void setGripperCommand(double gripper_deg);
+    void readpid(ros::NodeHandle& root_nh, const ros::Time& time, const ros::Duration& period);
 
 private:
     ros::NodeHandle nh_;
@@ -40,8 +42,8 @@ private:
     // Joint configuration
     static constexpr int NUM_JOINTS = 6;  // Declare num_joints_
     std::vector<std::string> joint_names_ = {
-        "Joint01", "Joint02", "Joint03", 
-        "Joint04", "Joint05", "Joint06"
+        "Joint1", "Joint2", "Joint3", 
+        "Joint4", "Joint5", "Joint6"
     };
 
     // State vectors
@@ -59,4 +61,20 @@ private:
     double zero_velocity_ = 0.0;
     double zero_effort_ = 0.0;
 
+    
+    // PID parameters
+    std::vector<double> p_gains_;
+    std::vector<double> i_gains_;
+    std::vector<double> d_gains_;
+    
+    // Error tracking
+    std::vector<double> position_error_;
+    std::vector<double> position_error_integral_;
+    std::vector<double> position_error_derivative_;
+    std::vector<double> prev_position_error_;
+
+    ros::Subscriber controller_state_subscriber_;
+    std::mutex error_mutex_; // To protect access to position_error_
+
+    void controllerStateCallback(const control_msgs::JointTrajectoryControllerStateConstPtr& msg);
 };

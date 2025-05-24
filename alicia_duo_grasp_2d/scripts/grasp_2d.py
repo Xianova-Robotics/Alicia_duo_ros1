@@ -1,12 +1,17 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 import numpy as np
 import time
 from geometry_msgs.msg import Pose
-from Obpose import ObjectPoseTransformer
-from alicia_duo_moveit.scripts.moveit_control import MoveItRobotController
+from obpose import ObjectPoseTransformer
+# from alicia_duo_grasp_2d.scripts.obpose import ObjectPoseTransformer
 from tf.transformations import quaternion_from_euler
 from std_msgs.msg import Float32
+import sys
+import os
+robot_path = os.path.expanduser('~/alicia_ws/src/alicia_duo_moveit/scripts')
+sys.path.append(robot_path)
+from moveit_control import MoveItRobotController
 
 class GraspController:
     def __init__(self):
@@ -18,7 +23,7 @@ class GraspController:
         self.gripper_control = self.robot_controller.gripper_control
         # 参数
         self.grasp_height_offset = 0.02  # 抓取高度补偿
-        self.approach_distance = 0.07    # 抓取前接近高度
+        self.approach_distance = 0.01    # 抓取前接近高度
         self.lift_distance = 0.03         # 抬升高度
         self.gripper_pub = rospy.Publisher('/gripper_control', Float32, queue_size=10)
 
@@ -78,7 +83,7 @@ class GraspController:
             return False
             
         # Close gripper
-        self.gripper_control(1) # 0-1
+        self.gripper_control(1.2) 
 
         # # 移动回 home 位姿
         home_joint_values = self.robot_controller.manipulator.get_named_target_values("home")

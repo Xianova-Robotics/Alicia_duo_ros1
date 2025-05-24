@@ -4,12 +4,12 @@
     <arg name="camera_load" value="true"/>
   </include>
 
-  <!-- Object Detection Node -->
-  <node name="object_detection" pkg="alicia_duo_grasp_2d" type="Obj_detection" output="screen"/>
-
   <!-- Object Pose Transformer Node -->
-  <node name="object_pose_transformer" pkg="alicia_duo_grasp_2d" type="Obpose" output="screen"/>
+  <node name="object_detection" pkg="alicia_duo_grasp_2d" type="obpose.py" output="screen"/>
+
+  <!-- Object Detection Node -->
+  <node name="object_pose_transformer" pkg="alicia_duo_grasp_2d" type="obj_detection.py" output="screen"/>
 
   <!-- Grasp Controller Node -->
-  <node name="grasp_controller" pkg="alicia_duo_grasp_2d" type="grasp_2d" output="screen"/>
+  <node name="grasp_controller" pkg="alicia_duo_grasp_2d" type="grasp_2d.py" output="screen"/>
 </launch>

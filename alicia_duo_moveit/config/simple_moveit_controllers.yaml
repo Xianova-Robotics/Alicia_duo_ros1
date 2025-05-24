@@ -4,32 +4,32 @@ controller_list:
     type: FollowJointTrajectory
     default: True
     joints:
-      - Joint01
-      - Joint02
-      - Joint03
-      - Joint04
-      - Joint05
-      - Joint06
+      - Joint1
+      - Joint2
+      - Joint3
+      - Joint4
+      - Joint5
+      - Joint6
   - name: gripper_controller
     action_ns: follow_joint_trajectory
     type: FollowJointTrajectory
     default: True
     joints:
-      - Grip_control
+      - Light_finger
   - name: arm_pos_controller
     action_ns: follow_joint_trajectory
     type: FollowJointTrajectory
     default: True
     joints:
-      - Joint01
-      - Joint02
-      - Joint03
-      - Joint04
-      - Joint05
-      - Joint06
+      - Joint1
+      - Joint2
+      - Joint3
+      - Joint4
+      - Joint5
+      - Joint6
   - name: gripper_controller
     action_ns: follow_joint_trajectory
     type: FollowJointTrajectory
     default: True
     joints:
-      - Grip_control
+      - Light_finger

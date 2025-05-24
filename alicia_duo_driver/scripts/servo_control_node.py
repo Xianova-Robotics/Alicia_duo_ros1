@@ -59,6 +59,7 @@ class ServoControlNode:
         self.gripper_frame = [0] * 8  
         self.gripper_frame[0] = FRAME_HEADER
         self.gripper_frame[1] = CMD_GRIPPER_CONTROL
+        # self.gripper_frame[2] = 5
         self.gripper_frame[2] = 3
         self.gripper_frame[3] = 1
         self.gripper_frame[-1] = FRAME_FOOTER
@@ -98,6 +99,25 @@ class ServoControlNode:
         checksum = sum(frame[3:-2]) % 2
         return checksum
     
+    def rad_to_hardware_value_grip(self, angle_rad):
+        """将弧度转换为夹爪舵机值(2048-2900)"""
+        # 先转换为角度
+        angle_deg = angle_rad * RAD_TO_DEG
+        
+        # 范围检查
+        if angle_deg < 0:
+            rospy.logwarn("角度值超出范围: %.2f度，会被截断", angle_deg)
+            angle_deg = 0
+        elif angle_deg > 300.0:
+            rospy.logwarn("角度值超出范围: %.2f度，会被截断", angle_deg)
+            angle_deg = 300.0
+        
+        # 转换公式：0度对应2048，100度对应2900
+        value = int(2048 + (angle_deg * 8.52))
+        
+        # 范围限制
+        return max(2048, min(2900, value))
+    
     def rad_to_hardware_value(self, angle_rad):
         """将弧度转换为硬件值(0-4095)"""
         # 先转换为角度
@@ -115,24 +135,24 @@ class ServoControlNode:
         # 范围限制
         return max(0, min(4095, value))
     
-    def rad_to_hardware_value_grip(self, angle_rad):
-        """将弧度转换为硬件值(0-4095)"""
-        # 先转换为角度
-        angle_deg = angle_rad * RAD_TO_DEG
+    # def rad_to_hardware_value_grip(self, angle_rad):
+    #     """将弧度转换为硬件值(0-4095)"""
+    #     # 先转换为角度
+    #     angle_deg = angle_rad * RAD_TO_DEG
         
-        # 范围检查
-        if angle_deg < 0:
-            rospy.logwarn("角度值超出范围: %.2f度，会被截断", angle_deg)
-            angle_deg = 0
-        elif angle_deg > 100.0:
-            rospy.logwarn("角度值超出范围: %.2f度，会被截断", angle_deg)
-            angle_deg = 100.0
+    #     # 范围检查
+    #     if angle_deg < 0:
+    #         rospy.logwarn("角度值超出范围: %.2f度，会被截断", angle_deg)
+    #         angle_deg = 0
+    #     elif angle_deg > 100.0:
+    #         rospy.logwarn("角度值超出范围: %.2f度，会被截断", angle_deg)
+    #         angle_deg = 100.0
         
 
-        value = int((angle_deg + 180.0) / 360.0 * 4096)
+    #     value = int((angle_deg + 180.0) / 360.0 * 4096)
         
         # 范围限制
-        return max(0, min(4095, value))
+        # return max(0, min(4095, value))
     
     def joint_command_callback(self, msg):
         """处理标准关节命令"""
@@ -144,7 +164,7 @@ class ServoControlNode:
                              msg.gripper)
             
             # 将关节角度放入数组便于处理
-            joint_angles = [-msg.joint1, msg.joint2, msg.joint3, 
+            joint_angles = [msg.joint1, msg.joint2, msg.joint3, 
                           msg.joint4, msg.joint5, msg.joint6]
             
             # 映射关节角度到各个舵机
@@ -215,7 +235,7 @@ class ServoControlNode:
         except Exception as e:
             rospy.logerr("处理零点校准命令出错: %s", str(e))
             
-    def frame_ge(self, control_cmd, control_data=0x00, check=False):
+    def frame_ge(self, control_cmd, control_data=0x00, check=True):
         frame_d = [0] * 6
         frame_d[0] = FRAME_HEADER
         frame_d[1] = control_cmd
@@ -257,6 +277,20 @@ class ServoControlNode:
             
             
     def gripper_control_callback(self, msg):
+        """
+                    # # 处理夹爪命令
+                    # gripper_value = self.rad_to_hardware_value_grip(msg.gripper)
+                    # self.gripper_frame[4] = gripper_value & 0xFF  # 低字节
+                    # self.gripper_frame[5] = (gripper_value >> 8) & 0xFF  # 高字节
+                    # self.gripper_frame[6] = self.calculate_checksum(self.gripper_frame)
+                    
+                    # # 创建并发送夹爪控制消息
+                    # gripper_msg = UInt8MultiArray()
+                    # gripper_msg.data = self.gripper_frame
+                    # self.serial_pub.publish(gripper_msg)
+        """
+
+            
         """单独处理夹爪控制命令"""
         try:
             gripper_rad = msg.data  # 直接获取Float32数据

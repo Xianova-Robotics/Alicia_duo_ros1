@@ -110,11 +110,33 @@ class ServoStatesNode:
     
     def gripper_angle_callback(self, msg):
         """处理夹爪角度数据"""
-        # 角度到弧度的转换
-        self.gripper_angle_rad = float(msg.data) * DEG_TO_RAD
+        try:
+            # 获取原始舵机值
+            servo_value = int(msg.data)
+            
+            # 范围检查
+            if servo_value < 2048 or servo_value > 2900:
+                # rospy.logwarn("夹爪舵机值超出范围: %d (有效范围2048-2900)", servo_value)
+                servo_value = max(2048, min(servo_value, 2900))
+            
+            # 转换为角度 (0-100度)
+            angle_deg = (servo_value - 2048) / 8.52
+            
+            # 转换为弧度
+            self.gripper_angle_rad = angle_deg * DEG_TO_RAD
+            
+            if self.debug_mode:
+                rospy.logdebug("夹爪舵机值: %d, 转换为角度: %.2f度 (%.4f弧度)", 
+                            servo_value, angle_deg, self.gripper_angle_rad)
+        except Exception as e:
+            rospy.logerr("处理夹爪角度数据异常: %s", str(e))
+    # def gripper_angle_callback(self, msg):
+    #     """处理夹爪角度数据"""
+    #     # 角度到弧度的转换
+    #     self.gripper_angle_rad = float(msg.data) #* DEG_TO_RAD
         
-        if self.debug_mode:
-            rospy.logdebug("夹爪角度: %.2f度 (%.4f弧度)", msg.data, self.gripper_angle_rad)
+    #     if self.debug_mode:
+    #         rospy.logdebug("夹爪角度: %.2f度 (%.4f弧度)", msg.data, self.gripper_angle_rad)
     
     def servo_states_callback(self, msg):
         """处理舵机状态数据"""

@@ -177,6 +177,7 @@ bool SerialServerNode::connectSerial() {
         if (serial_port_.isOpen()) {
             serial_port_.close();
         }
+        // port="/dev/ttyUSB0";
         
         // 设置串口参数
         serial_port_.setPort(port);
@@ -353,7 +354,11 @@ void SerialServerNode::readFrameThread() {
                             msg.layout.dim[0].size = frame_buffer.size();
                             msg.layout.dim[0].stride = 1;
                             msg.data = frame_buffer;
-                            
+                            // std::cout << "接收到数据: ";
+                            // for (const auto& byte : frame_buffer) {
+                            //     std::cout << std::hex << std::uppercase << std::setfill('0') 
+                            //               << std::setw(2) << static_cast<int>(byte) << " ";
+                            // }
                             printHexFrame(frame_buffer, 1);
                             pub_serial_data_.publish(msg);
                         } else {
