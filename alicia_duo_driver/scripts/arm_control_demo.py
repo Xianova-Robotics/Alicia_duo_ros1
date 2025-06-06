@@ -120,7 +120,7 @@ class ArmControlDemo:
             # 3. 测试关节2
             rospy.loginfo("=== 测试3: 关节2移动 ===")
             self.send_command(0, 10, 0, 0, 0, 0, 0)
-            self.send_command(0, -10, 0, 0, 0, 0, 0)
+            self.send_command(0, 5, 0, 0, 0, 0, 0)
             self.send_command(0, 0, 0, 0, 0, 0, 0)
             
             # 4. 测试夹爪
