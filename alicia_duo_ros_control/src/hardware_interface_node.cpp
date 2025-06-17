@@ -36,7 +36,6 @@ int main(int argc, char** argv)
 
         // Get the joint positions and gripper position after reading
         const std::vector<double>& joint_positions = robot_hw.getJointPositions(); 
-        double gripper_position = robot_hw.getGripperPosition();
 
         // Print the joint positions and gripper position
         // std::cout << "[Joint Positions] ";
@@ -49,7 +48,10 @@ int main(int argc, char** argv)
         // std::cout << "Gripper: " << gripper_position << " rad" << std::endl;
     
         robot_hw.read(now, elapsed_time);
+
         cm.update(now, elapsed_time);
+        // read pid parameters
+        robot_hw.readpid(nh, now, elapsed_time);
         robot_hw.write(now, elapsed_time);
         loop_rate.sleep();
     }

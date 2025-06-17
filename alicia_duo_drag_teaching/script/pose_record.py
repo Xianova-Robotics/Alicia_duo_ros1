@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 ROS节点：机器人姿态记录器
@@ -16,7 +16,7 @@ import tty
 import termios
 import rosbag
 import subprocess
-
+from std_msgs.msg import Bool
 from std_srvs.srv import SetBool, SetBoolRequest
 from alicia_duo_driver.msg import ArmJointState
 
@@ -29,10 +29,11 @@ class PoseRecorder:
         rospy.init_node('pose_recorder', anonymous=True)
         
         # 获取记录时长参数
-        self.record_duration = rospy.get_param('~record_duration', None)
+        self.record_duration = 10  # 默认记录10秒
         # 是否允许姿态还原功能
         self.enable_replay = rospy.get_param('~enable_replay', True)
-        
+        self.demo_pub = rospy.Publisher('/demonstration', Bool, queue_size=10)
+
         # 订阅关节状态主题
         self.joint_states_sub = rospy.Subscriber(
             '/arm_joint_state', 
@@ -77,6 +78,10 @@ class PoseRecorder:
     def start_recording(self):
         """开始记录关节状态数据"""
         try:
+            # Ensure the demo mode is enabled
+            for _ in range(3):
+                self.demo_pub.publish(Bool(data=True))
+                rospy.sleep(0.5)
             # 创建并打开bag文件
             self.bag = rosbag.Bag(self.bag_file, 'w')
             self.recording = True
@@ -180,28 +185,13 @@ class PoseRecorder:
     def _disable_demo_mode(self):
         """关闭拖动示教模式"""
         try:
-            # 等待服务可用
-            rospy.wait_for_service('/demo_mode/set_demo_mode', timeout=2.0)
-            
-            # 创建服务客户端
-            set_demo_mode = rospy.ServiceProxy('/demo_mode/set_demo_mode', SetBool)
-            
-            # 创建请求消息并设置数据为false
-            req = SetBoolRequest()
-            req.data = False
-            
-            # 调用服务
-            response = set_demo_mode(req)
-            
-            if response.success:
-                rospy.loginfo("已关闭拖动示教模式: %s", response.message)
-            else:
-                rospy.logwarn("关闭拖动示教模式失败: %s", response.message)
+            rospy.loginfo("正在关闭拖动示教模式...")
+            for _ in range(3):
+                self.demo_pub.publish(Bool(data=False))
+                rospy.sleep(0.5)
                 
         except rospy.ROSException as e:
             rospy.logerr("无法连接到示教模式服务: %s", str(e))
-        except rospy.ServiceException as e:
-            rospy.logerr("调用示教模式服务失败: %s", str(e))
     
     def _print_bag_preview(self):
         """打印bag文件的数据预览"""

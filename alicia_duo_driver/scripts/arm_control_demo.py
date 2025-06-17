@@ -114,25 +114,14 @@ class ArmControlDemo:
             # 2. 测试关节1
             rospy.loginfo("=== 测试2: 关节1移动 ===")
             self.send_command(30, 0, 0, 0, 0, 0, 0)
-            self.send_command(-30, 0, 0, 0, 0, 0, 0)
-            self.send_command(0, 0, 0, 0, 0, 0, 0)
+            self.send_command(30, 0, 0, 0, 0, 0, 0)
+            # # 3. 测试关节2
+            # rospy.loginfo("=== 测试3: 关节2移动 ===")
             
-            # 3. 测试关节2
-            rospy.loginfo("=== 测试3: 关节2移动 ===")
-            self.send_command(0, 30, 0, 0, 0, 0, 0)
-            self.send_command(0, -30, 0, 0, 0, 0, 0)
-            self.send_command(0, 0, 0, 0, 0, 0, 0)
-            
-            # 4. 测试夹爪
-            rospy.loginfo("=== 测试4: 夹爪控制 ===")
-            self.send_command(0, 0, 0, 0, 0, 0, 90)
-            self.send_command(0, 0, 0, 0, 0, 0, 0)
-            
-            # 5. 测试复合动作
-            rospy.loginfo("=== 测试5: 复合动作 ===")
-            self.send_command(20, 20, 20, 0, 0, 0, 45)
-            self.send_command(0, 0, 0, 0, 0, 0, 0)
-            
+            # self.send_command(30, 10, 0, 0, 0, 0, 0)
+            # self.send_command(0, 5, 0, 0, 0, 0, 0)
+            # self.send_command(0, 0, 0, 0, 0, 0, 0)
+
             rospy.loginfo("演示完成!")
             
         except KeyboardInterrupt:

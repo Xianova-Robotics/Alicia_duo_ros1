@@ -4,42 +4,32 @@ controller_list:
     type: FollowJointTrajectory
     default: true
     joints:
-      - Joint01
-      - Joint02
-      - Joint03
-      - Joint04
-      - Joint05
-      - Joint06
-  - name: gripper_controller
-    action_ns: follow_joint_trajectory
-    type: FollowJointTrajectory
-    default: true
-    joints:
-      - Grip_control
+      - Joint1
+      - Joint2
+      - Joint3
+      - Joint4
+      - Joint5
+      - Joint6
+
 arm_pos_controller:
   type: position_controllers/JointTrajectoryController
   joints:
-    - Joint01
-    - Joint02
-    - Joint03
-    - Joint04
-    - Joint05
-    - Joint06
+    - Joint1
+    - Joint2
+    - Joint3
+    - Joint4
+    - Joint5
+    - Joint6
   gains:
-    Joint01: {p: 100, i: 1, d: 1}
-    Joint02: {p: 100, i: 1, d: 1}
-    Joint03: {p: 100, i: 1, d: 1}
-    Joint04: {p: 100, i: 1, d: 1}
-    Joint05: {p: 100, i: 1, d: 1}
-    Joint06: {p: 100, i: 1, d: 1}
+    Joint1: {p: 0.2, i: 0.0, d: 0.0} 
+    Joint2: {p: 0.2, i: 0.0, d: 0.0}
+    Joint3: {p: 0.2, i: 0.0, d: 0.0}
+    Joint4: {p: 0.2, i: 0.0, d: 0.0}
+    Joint5: {p: 0.2, i: 0.0, d: 0.0}
+    Joint6: {p: 0.2, i: 0.0, d: 0.0}
+
 
 joint_state_controller:
   type: joint_state_controller/JointStateController
   publish_rate: 50
 
-gripper_controller:
-  type: position_controllers/JointTrajectoryController
-  joints: 
-    - Grip_control
-  gains:
-    Grip_control: {p: 100, i: 1, d: 1}

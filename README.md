@@ -1,5 +1,4 @@
 # 灵动 Alicia Duo 系列机械臂
-[English Version](README_en.md) | [中文版](README.md)
 
 ![输入图片说明](images/Alicia_duo4.jpg)
 
@@ -7,11 +6,11 @@
 
 该仓库包含多个目录，每个目录包含与 Alicia Duo 机械臂相关的 ROS 包和资源。以下是仓库的结构：
 ```
-├── alicia_duo_calibration
 ├── alicia_duo_descriptions
 ├── alicia_duo_drag_teaching
 ├── alicia_duo_driver
 ├── alicia_duo_grasp_2d
+├── alicia_duo_grasp_6d
 ├── alicia_duo_moveit
 ├── alicia_duo_ros_control
 
@@ -36,6 +35,7 @@ Alicia Duo 是一款多功能机械臂，设计用于多种应用场景。其模
 这些包基于核心包，展示了特定功能：
 - **`alicia_duo_drag_teaching`**: 实现拖动示教功能。
 - **`alicia_duo_grasp_2d`**: 展示机械臂的 2D 抓取能力。
+- **`alicia_duo_grasp_6d`**: Alicia Duo机械臂 6D 抓取示例。
 - **示例**: 包含学习和测试的示例脚本和演示：
   - **`alicia_duo_zero_calibration.py`**: 用于机械臂零点校准的 Python 脚本。
 
@@ -52,6 +52,6 @@ Alicia Duo 是一款多功能机械臂，设计用于多种应用场景。其模
 ## 链接
 
 - **淘宝店铺**: [Alicia Duo 官方淘宝店](https://g84gtpygdv6trpvdhcsy0kfr73avcip.taobao.com/shop/view_shop.htm?appUid=RAzN8HWKU5B7MfX6JjEWgkuNfftNVbnrjbjx6fPjY9KqXB46Rvy&spm=a21n57.1.hoverItem.2)
-- **产品手册**: [Alicia Duo 产品手册](https://tcnqzgyay0jb.feishu.cn/wiki/DGtywN4j8ikctwk6PoccULllnkb)
+- **产品手册**: [Alicia Duo 产品手册](https://tcnqzgyay0jb.feishu.cn/wiki/ElDUwERlNilPLWkJ2e2cYGyZncb?fromScene=spaceOverview)
 
 ---

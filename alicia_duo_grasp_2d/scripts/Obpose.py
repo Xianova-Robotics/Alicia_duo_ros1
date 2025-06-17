@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 import yaml
 import numpy as np
@@ -16,17 +16,27 @@ class ObjectPoseTransformer:
             rospy.init_node('object_pose_transformer', anonymous=True)
 
         # 加载标定变换矩阵
+        self.object_detected = False  # Initialize to False
         self.transform_matrix = self.load_transform_from_yaml()
         self.latest_pose = None
         self.tf_broadcaster = tf2_ros.TransformBroadcaster()
-
+        self.publish_rate = rospy.get_param('~publish_rate', 10)  # 10Hz by default
+        self.timer = rospy.Timer(rospy.Duration(1.0/self.publish_rate), self.publish_timer_callback)
+        
         # 订阅检测到的物体位置
         rospy.Subscriber("/detected_object_position", Point, self.callback)
         rospy.loginfo("ObjectPoseTransformer initialized. Waiting for detected object position...")
+    def publish_timer_callback(self, event):
+        """Timer callback to continuously publish the object TF"""
+        # Only publish if we have a valid detection
+        if self.object_detected and self.latest_pose is not None:
+            self.publish_object_tf(self.latest_pose)
+        else:
+            rospy.loginfo_throttle(10.0, "No object detected yet, waiting for detection...")
 
     def load_transform_from_yaml(self):
         """从 YAML 文件加载标定变换矩阵"""
-        yaml_path = os.path.expanduser("~/.ros/easy_handeye/Alicia_usb_handeyecalibration_eye_on_base.yaml")
+        yaml_path = os.path.expanduser("~/.ros/easy_handeye/orbbec_handeyecalibration_eye_on_base.yaml")
 
         try:
             with open(yaml_path, 'r') as f:
@@ -63,7 +73,7 @@ class ObjectPoseTransformer:
         """发布物体的 TF 坐标"""
         t = geometry_msgs.msg.TransformStamped()
         t.header.stamp = rospy.Time.now()
-        t.header.frame_id = "world"  # 或 "base_link" 作为基坐标系
+        t.header.frame_id = "base_link"  # 或 "base_link" 作为基坐标系
         t.child_frame_id = "detected_object"
 
         t.transform.translation.x = obj_pos[0]
@@ -77,6 +87,11 @@ class ObjectPoseTransformer:
         t.transform.rotation.w = quat[3]
 
         self.tf_broadcaster.sendTransform(t)
+        # Add a log message but throttle it to avoid flooding the console
+        # if self.object_detected:
+        #     rospy.loginfo_throttle(5.0, "Publishing detected object TF at: x=%.3f y=%.3f z=%.3f", *obj_pos)
+        # else:
+        #     rospy.loginfo_throttle(5.0, "Publishing default object TF (no detection)")
 
     def callback(self, msg):
         """将 3D 点从相机光学坐标系转换到机械臂基坐标系"""
@@ -97,18 +112,19 @@ class ObjectPoseTransformer:
                 [0, 0, 0, 1]
             ])  # 旋转矩阵 + 无平移
 
-            # 3. 将物体从光学帧转换到相机本体帧
-            obj_link = np.dot(R_optical_to_link, obj_optical)
-
+            # # 3. 将物体从光学帧转换到相机本体帧
+            # obj_link = np.dot(R_optical_to_link, obj_optical)
+            obj_link = obj_optical.copy()
             # 4. 从相机本体帧转换到机械臂基坐标系
             obj_robot = np.dot(self.transform_matrix, obj_link)
 
             # 更新并记录结果
             self.latest_pose = obj_robot[:3]
-            self.publish_object_tf(self.latest_pose)
+            # self.publish_object_tf(self.latest_pose)
+            self.object_detected = True
 
             # 限制日志输出频率
-            rospy.loginfo_throttle(1.0, "Robot frame: x=%.3f y=%.3f z=%.3f", *obj_robot[:3])
+            rospy.loginfo_throttle(1.0, "Detected Object in Robot Frame: x=%.3f y=%.3f z=%.3f", *obj_robot[:3])
         except Exception as e:
             rospy.logerr(f"Error in callback: {e}")
 

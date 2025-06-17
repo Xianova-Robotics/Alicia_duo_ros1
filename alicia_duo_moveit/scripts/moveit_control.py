@@ -9,9 +9,8 @@ import tf2_ros
 import geometry_msgs.msg
 import numpy as np
 
-
 class MoveItRobotController:
-    def __init__(self, manipulator_group="manipulator", gripper_group="gripper", velocity=0.4):
+    def __init__(self, manipulator_group="alicia", gripper_group="gripper", velocity=0.6):
         # Initialize MoveIt
         moveit_commander.roscpp_initialize(sys.argv)
         if not rospy.get_node_uri():
@@ -25,12 +24,13 @@ class MoveItRobotController:
 
         # Move groups
         self.manipulator = moveit_commander.MoveGroupCommander(manipulator_group)
-        self.gripper = moveit_commander.MoveGroupCommander(gripper_group)
+        # self.gripper = moveit_commander.MoveGroupCommander(gripper_group)
 
         # Set velocity scaling (0.0 to 1.0)
         self.manipulator.set_max_velocity_scaling_factor(velocity)
-        self.gripper.set_max_velocity_scaling_factor(velocity)
-
+        # self.gripper.set_max_velocity_scaling_factor(velocity)
+        # set the manximum acceleration scaling factor
+        self.manipulator.set_max_acceleration_scaling_factor(0.5)
         self.manipulator.set_planner_id("RRTConnectkConfigDefault")  # 更快更稳定
         self.manipulator.set_planning_time(10.0)                     # 增加规划时间
         self.manipulator.set_num_planning_attempts(10)
@@ -42,9 +42,10 @@ class MoveItRobotController:
         self.gripper_pub = rospy.Publisher('/gripper_control', Float32, queue_size=10)
 
     def gripper_control(self, value):
-        rate = rospy.Rate(10)  # 10 Hz
-        rospy.loginfo("Publishing gripper control value: %f", value)
-        self.gripper_pub.publish(Float32(data=value))
+        # rate = rospy.Rate(10)  # 10 Hz
+        for i in range(3):
+            self.gripper_pub.publish(Float32(data=value))
+            rospy.sleep(0.3)
 
 
     def move_to_pose(self, pose):
@@ -61,16 +62,68 @@ class MoveItRobotController:
         return success
 
 
-    def publish_object_tf(self, obj_pos):
+    # Add to the MoveItRobotController class
+    def get_current_pose(self):
+        """
+        获取当前机械臂的位姿
+        
+        Returns:
+            geometry_msgs.msg.Pose: 当前机械臂的位姿
+        """
+        return self.manipulator.get_current_pose().pose
+    
+    def move_to_tcp_pose(self, tcp_pose):
+        """
+        Move to a target pose specified for the TCP (tool center point)
+        
+        Args:
+            tcp_pose: geometry_msgs.msg.Pose - The desired pose for the TCP
+            
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        try:
+            # Import GripperPoseManager within the function to avoid circular imports
+            from gripper_pose_manager import GripperPoseManager
+            
+            # Create a pose manager instance
+            pose_manager = GripperPoseManager()
+            
+            # Convert TCP pose to Link06 pose
+            manipulator_pose = pose_manager.tcp_to_manipulator_pose(tcp_pose)
+            
+            if manipulator_pose is None:
+                rospy.logerr("Failed to convert TCP pose to manipulator pose")
+                return False
+            
+            # Visualize both poses for debugging
+            self.publish_object_tf(tcp_pose, "tcp_target")
+            self.publish_object_tf(manipulator_pose, "link06_target")
+            
+            rospy.loginfo("TCP target: position=(%.4f, %.4f, %.4f)", 
+                        tcp_pose.position.x, tcp_pose.position.y, tcp_pose.position.z)
+            rospy.loginfo("Link06 target: position=(%.4f, %.4f, %.4f)", 
+                        manipulator_pose.position.x, manipulator_pose.position.y, manipulator_pose.position.z)
+            
+            # Move to the converted pose
+            return self.move_to_pose(manipulator_pose)
+        
+        except Exception as e:
+            rospy.logerr(f"Error in move_to_tcp_pose: {e}")
+            import traceback
+            traceback.print_exc()
+            return False
+        
+
+    def publish_object_tf(self, obj_pos, frame_id="pre_pose"):
         t = geometry_msgs.msg.TransformStamped()
         t.header.stamp = rospy.Time.now()
-        t.header.frame_id = "world"  # or "base_link" if that’s your base
-        t.child_frame_id = "pre_pose"
-        t.transform.translation.x =  obj_pos.position.x
-        t.transform.translation.y =  obj_pos.position.y
-        t.transform.translation.z =  obj_pos.position.z
+        t.header.frame_id = "world"  # or "base_link" if that's your base
+        t.child_frame_id = frame_id
+        t.transform.translation.x = obj_pos.position.x
+        t.transform.translation.y = obj_pos.position.y
+        t.transform.translation.z = obj_pos.position.z
 
-        # quat = tf_conversions.transformations.quaternion_from_euler(0, 0, 0)
         t.transform.rotation.x = obj_pos.orientation.x 
         t.transform.rotation.y = obj_pos.orientation.y
         t.transform.rotation.z = obj_pos.orientation.z
@@ -85,6 +138,14 @@ class MoveItRobotController:
         self.manipulator.stop()
         return success
 
+    def get_current_joint_state(self):
+        """
+        获取当前机械臂的关节状态
+        
+        Returns:
+            list: 当前机械臂的关节角度列表
+        """
+        return self.manipulator.get_current_joint_values()
     def execute_trajectory(self, trajectory):
         """
         执行给定的机器人轨迹
@@ -179,67 +240,61 @@ class MoveItRobotController:
         self.manipulator.set_max_velocity_scaling_factor(factor)
         rospy.loginfo("速度缩放因子设置为: %.2f", factor)
         
- 
 
+        
 if __name__ == '__main__':
     controller = MoveItRobotController()
 
-    # Example: Move to a Cartesian pose
+    # 定义初始位姿（当前）
+    start_pose = controller.manipulator.get_current_pose().pose
+
+    # 定义目标位姿变化：向上移动 0.1m，向右移动 0.05m
+    # waypoints = []
+    # waypoints.append(start_pose)
+
+    # target_pose = Pose()
+    # target_pose.position.x = start_pose.position.x + 0.05
+    # target_pose.position.y = start_pose.position.y
+    # target_pose.position.z = start_pose.position.z + 0.01
+    # target_pose.orientation = start_pose.orientation  # 保持姿态不变
+
+    # waypoints.append(target_pose)
+
+    start_pose = controller.manipulator.get_current_pose().pose
+
+    # Define target pose change: move upwards by 0.1m, right by 0.05m
+    waypoints = []
+    waypoints.append(start_pose)
+
     target_pose = Pose()
-    # target_pose.orientation.w = 1.0
-    # target_pose.position.x = 0.4
-    # target_pose.position.y = 0.1
-    # target_pose.position.z = 0.4
+    target_pose.position.x = start_pose.position.x + 0.05
+    target_pose.position.y = start_pose.position.y
+    target_pose.position.z = start_pose.position.z + 0.01
+    target_pose.orientation = start_pose.orientation  # Keep the same orientation
 
-    # rospy.loginfo("Moving to target pose...")
-    # success = controller.move_to_pose(target_pose)
-    # rospy.loginfo("Move to pose: %s", "Success" if success else "Failed")
+    waypoints.append(target_pose)
 
-    # Print current joint values and pose
-    
-    ## Set pose
-    
-    # Gripper goal pose
-    gripper_goal = Pose()
-    gripper_goal.position.x = 0.25 #0.22433333
-    gripper_goal.position.y = 0.0 #0.12029027
-    gripper_goal.position.z = 0.09#-0.02354876
-    q = quaternion_from_euler(np.pi, np.pi/2, 0)  # roll 180 degrees
-    print(q)
-        # ee_pose = [0.22433333,  0.12029027, -0.02354876, q[0], q[1], q[2]]
-        # 设置合法 orientation（无旋转，单位四元数）
-    gripper_goal.orientation.x = q[0]
-    gripper_goal.orientation.y = q[1]
-    gripper_goal.orientation.z = q[2]
-    gripper_goal.orientation.w = q[3]
+    # Plan Cartesian path
+    (plan, fraction) = controller.manipulator.compute_cartesian_path(
+        waypoints,            # Path waypoints
+        eef_step=0.01,        # End effector step size in meters
+        avoid_collisions=True # Avoid collisions
+    )
 
+    # If planning is successful, execute the trajectory
+    if fraction >= 0.8:
+        rospy.loginfo("Cartesian path planning completed with success: %.2f%%", fraction * 100.0)
 
-    # rospy.loginfo("Trying to move to gripper goal pose...")
+        # Make sure the waypoints have increasing timestamps before executing the trajectory
+        for idx, waypoint in enumerate(plan.joint_trajectory.points):
+            waypoint.time_from_start = rospy.Duration(0.0) if idx == 0 else plan.joint_trajectory.points[idx - 1].time_from_start + rospy.Duration(0.1)
 
-    # success = controller.move_to_pose_no_gripper(gripper_goal)
-
-
-    target_pose = controller.get_current_pose()
-    rospy.loginfo("target_pose")
-    rospy.loginfo(target_pose)
-    target_pose.position.z -= 0.06  # 向下移动 5cm
-
-    # success = controller.move_to_pose_linear(target_pose)
-
-    success = controller.move_to_pose(target_pose)
-
-    if success:
-        rospy.loginfo("Successfully moved to gripper pose!")
+        # Execute trajectory
+        success = controller.execute_trajectory(plan)
+        if success:
+            rospy.loginfo("Cartesian trajectory execution succeeded")
+        else:
+            rospy.logwarn("Cartesian trajectory execution failed")
     else:
-        rospy.logwarn("Failed to move to gripper pose.")
+        rospy.logwarn("Cartesian path planning success rate below 80%, aborting execution")
 
-    # ## Read pose
-    # print("Current Joint States:", controller.get_joint_states())
-    # print("Current Pose:", controller.get_current_pose())
-    
-    
-    # gripper_pose = controller.get_current_pose_with_gripper()
-    # if gripper_pose:
-    #     print("Gripper Pose:")
-    #     print(f"Position: {gripper_pose.position}")
-    #     print(f"Orientation: {gripper_pose.orientation}")
