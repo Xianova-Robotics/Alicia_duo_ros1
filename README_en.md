@@ -1,4 +1,4 @@
-# Alicia Duo Robotic Arm Series
+# Alicia-D Robotic Arm Series
 
 [English Version](README_en.md) | [中文版](README.md)
 
@@ -6,7 +6,7 @@
 
 ## Repository Structure
 
-This repository contains multiple directories, each including ROS packages and resources related to the Alicia Duo robotic arm. The structure is as follows:
+This repository contains multiple directories, each including ROS packages and resources related to the Alicia-D manipulator. The structure is as follows:
 ```
 ├── alicia_duo_calibration
 ├── alicia_duo_descriptions
@@ -23,7 +23,7 @@ This repository contains multiple directories, each including ROS packages and r
 ## Description
 
 ### Robotic Arm Type: Alicia Duo
-Alicia Duo is a versatile robotic arm designed for various applications. Its modular architecture makes it easy to integrate with ROS.
+Alicia-D is a versatile robotic arm designed for various applications. Its modular architecture makes it easy to integrate with ROS.
 
 ### Core Robotic Arm ROS Packages
 These are the core ROS packages required to operate the Alicia Duo robotic arm:
@@ -52,7 +52,7 @@ The `install` directory contains installation scripts:
 ---
 ## Links
 
-- **Taobao Store**: [Alicia Duo Official Taobao Store](https://g84gtpygdv6trpvdhcsy0kfr73avcip.taobao.com/shop/view_shop.htm?appUid=RAzN8HWKU5B7MfX6JjEWgkuNfftNVbnrjbjx6fPjY9KqXB46Rvy&spm=a21n57.1.hoverItem.2)
-- **Product Manual**: [Alicia Duo Product Manual](https://tcnqzgyay0jb.feishu.cn/wiki/DGtywN4j8ikctwk6PoccULllnkb)
+- **Taobao Store**: [Alicia-D Official Taobao Store](https://g84gtpygdv6trpvdhcsy0kfr73avcip.taobao.com/shop/view_shop.htm?appUid=RAzN8HWKU5B7MfX6JjEWgkuNfftNVbnrjbjx6fPjY9KqXB46Rvy&spm=a21n57.1.hoverItem.2)
+- **Product Manual**: [Alicia-D Product Manual](https://tcnqzgyay0jb.feishu.cn/wiki/DGtywN4j8ikctwk6PoccULllnkb)
 
 ---

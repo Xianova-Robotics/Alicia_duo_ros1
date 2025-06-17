@@ -1,4 +1,4 @@
-# 灵动 Alicia Duo 系列机械臂
+# 灵动 Alicia-D 系列机械臂
 
 ![输入图片说明](images/Alicia_duo4.jpg)
 
@@ -20,11 +20,11 @@
 
 ## 描述
 
-### 机械臂类型：Alicia Duo
-Alicia Duo 是一款多功能机械臂，设计用于多种应用场景。其模块化架构使其易于与 ROS 集成。
+### 机械臂类型：Alicia-D
+Alicia-D 是一款多功能机械臂，设计用于多种应用场景。其模块化架构使其易于与 ROS 集成。
 
 ### 核心机械臂 ROS 包
-这些是操作 Alicia Duo 机械臂所需的核心 ROS 包：
+这些是操作 Alicia-D 机械臂所需的核心 ROS 包：
 - **`alicia_duo_driver`**: 提供与机械臂的底层控制和通信。
 - **`alicia_duo_moveit`**: 配置机械臂以使用 MoveIt 进行运动规划和控制。
 - **`alicia_duo_ros_control`**: 实现机械臂的 ROS 控制接口。
@@ -51,7 +51,7 @@ Alicia Duo 是一款多功能机械臂，设计用于多种应用场景。其模
 ---
 ## 链接
 
-- **淘宝店铺**: [Alicia Duo 官方淘宝店](https://g84gtpygdv6trpvdhcsy0kfr73avcip.taobao.com/shop/view_shop.htm?appUid=RAzN8HWKU5B7MfX6JjEWgkuNfftNVbnrjbjx6fPjY9KqXB46Rvy&spm=a21n57.1.hoverItem.2)
-- **产品手册**: [Alicia Duo 产品手册](https://tcnqzgyay0jb.feishu.cn/wiki/ElDUwERlNilPLWkJ2e2cYGyZncb?fromScene=spaceOverview)
+- **淘宝店铺**: [Alicia-D 官方淘宝店](https://g84gtpygdv6trpvdhcsy0kfr73avcip.taobao.com/shop/view_shop.htm?appUid=RAzN8HWKU5B7MfX6JjEWgkuNfftNVbnrjbjx6fPjY9KqXB46Rvy&spm=a21n57.1.hoverItem.2)
+- **产品手册**: [Alicia-D 产品手册](https://tcnqzgyay0jb.feishu.cn/wiki/ElDUwERlNilPLWkJ2e2cYGyZncb?fromScene=spaceOverview)
 
 ---
