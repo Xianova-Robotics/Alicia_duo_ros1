@@ -1,5 +1,7 @@
 # 灵动 Alicia-D 系列机械臂
 
+[English Version](README_en.md) | [中文版](README.md)
+
 ![输入图片说明](images/Alicia_duo4.jpg)
 
 ## 仓库结构
