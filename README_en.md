@@ -53,6 +53,6 @@ The `install` directory contains installation scripts:
 ## Links
 
 - **Taobao Store**: [Alicia-D Official Taobao Store](https://g84gtpygdv6trpvdhcsy0kfr73avcip.taobao.com/shop/view_shop.htm?appUid=RAzN8HWKU5B7MfX6JjEWgkuNfftNVbnrjbjx6fPjY9KqXB46Rvy&spm=a21n57.1.hoverItem.2)
-- **Product Manual**: [Alicia-D Product Manual](https://tcnqzgyay0jb.feishu.cn/wiki/DGtywN4j8ikctwk6PoccULllnkb)
+- **Product Manual**: [Alicia-D Product Manual](https://tcnqzgyay0jb.feishu.cn/wiki/ElDUwERlNilPLWkJ2e2cYGyZncb?fromScene=spaceOverview)
 
 ---
