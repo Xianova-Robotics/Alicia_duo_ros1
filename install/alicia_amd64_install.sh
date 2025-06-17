@@ -10,6 +10,10 @@ sudo apt -y install python3-serial
 sudo apt-get install ros-$ROS_DISTRO-usb-cam
 sudo apt-get install ros-$ROS_DISTRO-camera-calibration
 sudo apt-get install ros-$ROS_DISTRO-moveit
+sudo apt-get install ros-$ROS_DISTRO-serial
+sudo apt install ros-$ROS_DISTRO-ros-control ros-$ROS_DISTRO-ros-controllers
+
+    
 # 安装机械臂相关包
 ALICIA_WS=~/alicia_ws
 if [ ! -d "$ALICIA_WS/src" ]; then
@@ -37,6 +41,7 @@ if ! grep -Fxq "source $ALICIA_WS/devel/setup.bash" ~/.bashrc; then
   echo "source $ALICIA_WS/devel/setup.bash" >> ~/.bashrc
 fi
 
-
+source ~/.bashrc
 source "$ALICIA_WS/devel/setup.bash"
+
 
