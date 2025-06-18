@@ -2,7 +2,7 @@
 
 [English Version](README_en.md) | [中文版](README.md)
 
-![输入图片说明](images/Alicia_duo4.jpg)
+![输入图片说明](images/Alicia Duo V5.4.png)
 
 ## 仓库结构
 
