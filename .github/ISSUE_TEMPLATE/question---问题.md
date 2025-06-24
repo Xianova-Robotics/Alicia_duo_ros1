@@ -26,6 +26,7 @@ A clear and concise description of your question / 清晰简洁地描述您的�
 Please provide information about your environment / 请提供关于您的运行环境的详细信息
 
 - OS / 操作系统: [e.g. Ubuntu 20.04, Windows 10]
+- ROS version / ROS 版本: [e.g. ROS1 Noetic]
 - Python version / Python 版本: [e.g. 3.8.5]
 - PyTorch version / PyTorch 版本: [e.g. 1.9.0]
 - CUDA version / CUDA 版本: [e.g. 11.1]
