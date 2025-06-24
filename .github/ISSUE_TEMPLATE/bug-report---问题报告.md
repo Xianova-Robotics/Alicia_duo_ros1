@@ -1,11 +1,21 @@
 ---
-name: Bug report
+name: Bug report / 问题报告
 about: Create a report to help us improve
 title: ''
 labels: ''
 assignees: ''
 
 ---
+
+## Prerequisites / 前置条件
+Please check these items before submitting an issue / 提交 issue 前请确认以下事项
+
+- [ ] I have checked the existing issues and confirmed that this issue has not been reported yet / 我已检查现有的 issues，确认此问题尚未被报告
+- [ ] I have asked ChatGPT/Claude or other AI assistants for help and solutions / 我已经向 ChatGPT/Claude 或其他 AI 助手寻求过帮助和解决方案
+- [ ] I have included screenshots or text of the AI's suggested solutions below / 我已在下方附上 AI 给出的解决方案截图或文本
+
+**AI Solution Screenshot / AI 解决方案截图:**
+Please paste the screenshot or text of the solution provided by AI here / 请在此粘贴 AI 提供的解决方案截图或文本
 
 ## Description / 描述
 A clear and concise description of the bug / 简明扼要地描述您遇到的 bug
@@ -15,14 +25,6 @@ Steps to reproduce the behavior / 描述复现这个 bug 的步骤
 1. 
 2. 
 3. 
-4. 
-
-
-## Expected Behavior / 期望行为
-A clear and concise description of what you expected to happen / 清楚简洁地描述您期望发生的情况
-
-## Actual Behavior / 实际行为
-Description of what actually happened, including error messages / 描述实际发生的情况，包括错误信息
 
 ## Screenshots / 报错截图
 If applicable, add screenshots to help explain your problem.
