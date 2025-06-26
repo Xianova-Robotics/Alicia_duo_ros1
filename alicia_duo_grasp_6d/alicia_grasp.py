@@ -12,25 +12,18 @@ import rospy
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import CameraInfo as ROSCameraInfo
 import cv2
-from scipy.spatial.transform import Rotation as R
-from PIL import Image as PilImage
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(ROOT_DIR)
 sys.path.append(os.path.join(ROOT_DIR, 'utils'))
 sys.path.append(os.path.join(ROOT_DIR, 'pointnet2'))
 from models.graspnet import GraspNet, pred_decode
 from data_utils import CameraInfo, create_point_cloud_from_depth_image
-import moveit_commander
-from moveit_commander import MoveGroupCommander, PlanningSceneInterface, RobotCommander
-from moveit_msgs.msg import  PlanningScene, ObjectColor,CollisionObject, AttachedCollisionObject,Constraints,OrientationConstraint
 from geometry_msgs.msg import PoseStamped
 from tf.transformations import (
     quaternion_matrix,
     quaternion_from_matrix,
-    quaternion_from_euler,
     euler_from_quaternion
 )
-import real.robotiq_gripper as robotiq_gripper
 import tf2_ros
 from geometry_msgs.msg import PoseStamped, Pose
 from tf.transformations import quaternion_matrix, quaternion_from_matrix, euler_from_quaternion
@@ -43,7 +36,6 @@ sys.path.remove(ros_path)  # Remove ROS path after importing cv_bridge
 
 
 from cv_bridge import CvBridge
-
 
 dataset_path = './graspness_implementation/'
 robot_path = '/home/xuanya/alicia_ws/src/alicia_duo_moveit/scripts'
@@ -532,9 +524,8 @@ def grasp(data_input, cloud_,point_left_up,point_right_bottom):
         valid_grasps = valid_grasps[:5] # Assuming this is implemented for GraspGroup
 
 
-    # 以下为可视化代码（目前注释掉）
+    
     grippers = valid_grasps.to_open3d_geometry_list()  # 将抓取姿态转换为 Open3D 几何对象列表
-    # print("grippers:", grippers)
     grippers[0].paint_uniform_color([0, 1, 0])  # 将得分最高的抓取姿态涂成绿色
     #输出得分最高的抓取姿态的z坐标
     print("抓取姿态的z坐标:",valid_grasps[0].translation[2])
@@ -585,10 +576,6 @@ def grasp(data_input, cloud_,point_left_up,point_right_bottom):
         tcp_pose.position.y = t_arm2object[1]
         tcp_pose.position.z = t_arm2object[2]
         
-        # Convert Euler angles to quaternion
-        # q = quaternion_from_euler(np.radians(euler_angles[0]), 
-        #                          np.radians(euler_angles[1]), 
-        #                          np.radians(euler_angles[2]))
         tcp_pose.orientation.x = quanterion[0]
         tcp_pose.orientation.y = quanterion[1]
         tcp_pose.orientation.z = quanterion[2]
@@ -644,12 +631,5 @@ def visualize_point_cloud(cloud):
 
 
 if __name__ == '__main__':
-    # moveit_server = MoveIt_Control(is_use_gripper=False)
-    # while True:
     data_dict, cloud, point_left_up, point_right_bottom = data_process()
     success=grasp(data_dict, cloud,point_left_up, point_right_bottom)
-        # if not success:
-        #     print("未检测到抓取姿态或无有效抓取姿态")
-        #     break
-    # Visualize the point cloud
-    # visualize_point_cloud(cloud)
