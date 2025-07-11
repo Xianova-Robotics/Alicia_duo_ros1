@@ -33,7 +33,7 @@ sh install/alicia_amd64_install.sh
 该仓库包含多个目录，每个目录包含与 Alicia-D 系列机械臂相关的 ROS 包和资源。以下是仓库的结构：
 
 ```
-Alicia_duo_ros1
+Alicia-D-ROS1
 ├── alicia_duo_descriptions
 ├── alicia_duo_drag_teaching
 ├── alicia_duo_driver
