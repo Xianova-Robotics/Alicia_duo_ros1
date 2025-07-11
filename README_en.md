@@ -33,7 +33,7 @@ sh install/alicia_amd64_install.sh
 This repository contains several directories, each including ROS packages and resources related to the Alicia-D robotic arm series. The structure is as follows:
 
 ```
-Alicia_duo_ros1
+Alicia-D-ROS1
 ├── alicia_duo_descriptions
 ├── alicia_duo_drag_teaching
 ├── alicia_duo_driver
