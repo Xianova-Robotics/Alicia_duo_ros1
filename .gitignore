@@ -2,3 +2,7 @@ build/Makefile
 real_pusht_2025_1_7
 real_pusht_2025_1_3
 .DS_Store
+<<<<<<< HEAD
+=======
+*.pyc
+>>>>>>> 31afcdaf8211c3b048ca078402a46a9b42c741da

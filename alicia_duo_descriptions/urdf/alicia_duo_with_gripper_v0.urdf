@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
-     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
-     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
-<robot
-  name="alicia_duo_descriptions">
+<robot name="alicia_D_v5_4_50mm_gripper">
+  <mujoco>
+    <compiler meshdir="../meshes_v1" discardvisual="false" />
+    <contact>
+      <exclude body1="base_link" body2="Link1"/>
+      <exclude body1="Link1" body2="Link2"/>
+      <exclude body1="Link2" body2="Link3"/>
+      <exclude body1="Link3" body2="Link4"/>
+      <exclude body1="Link4" body2="Link5"/>
+      <exclude body1="Link5" body2="Link6"/>
+      <exclude body1="Link6" body2="Link7"/>
+      <exclude body1="Link6" body2="Link8"/>
+    </contact>
+  </mujoco>
   <link
     name="base_link">
     <visual>
@@ -12,7 +21,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/base_link.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/base_link.STL" />
       </geometry>
       <material
         name="">
@@ -26,7 +35,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/base_link.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/base_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -52,7 +61,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Link1.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Link1.STL" />
       </geometry>
       <material
         name="">
@@ -66,7 +75,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Link1.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Link1.STL" />
       </geometry>
     </collision>
   </link>
@@ -110,7 +119,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Link2.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Link2.STL" />
       </geometry>
       <material
         name="">
@@ -124,7 +133,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Link2.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Link2.STL" />
       </geometry>
     </collision>
   </link>
@@ -141,8 +150,8 @@
     <axis
       xyz="0 0 -1" />
     <limit
-      lower="-3.14"
-      upper="3.14"
+      lower="-1.57"
+      upper="1.57"
       effort="12"
       velocity="5" />
   </joint>
@@ -168,7 +177,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Link3.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Link3.STL" />
       </geometry>
       <material
         name="">
@@ -182,7 +191,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Link3.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Link3.STL" />
       </geometry>
     </collision>
   </link>
@@ -199,8 +208,8 @@
     <axis
       xyz="0 0 -1" />
     <limit
-      lower="-3.14"
-      upper="3.14"
+      lower="-0.5"
+      upper="2.35619"
       effort="12"
       velocity="5" />
   </joint>
@@ -226,7 +235,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Link4.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Link4.STL" />
       </geometry>
       <material
         name="">
@@ -240,7 +249,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Link4.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Link4.STL" />
       </geometry>
     </collision>
   </link>
@@ -284,7 +293,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Link5.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Link5.STL" />
       </geometry>
       <material
         name="">
@@ -298,7 +307,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Link5.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Link5.STL" />
       </geometry>
     </collision>
   </link>
@@ -315,8 +324,8 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-3.14"
-      upper="3.14"
+      lower="-1.57"
+      upper="1.5"
       effort="12"
       velocity="5" />
   </joint>
@@ -342,7 +351,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Link6.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Link6.STL" />
       </geometry>
       <material
         name="">
@@ -356,7 +365,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Link6.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Link6.STL" />
       </geometry>
     </collision>
   </link>
@@ -400,7 +409,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Grasp_base.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Grasp_base.STL" />
       </geometry>
       <material
         name="">
@@ -414,7 +423,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Grasp_base.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Grasp_base.STL" />
       </geometry>
     </collision>
   </link>
@@ -453,7 +462,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Link7.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Link7.STL" />
       </geometry>
       <material
         name="">
@@ -467,7 +476,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Link7.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Link7.STL" />
       </geometry>
     </collision>
   </link>
@@ -536,7 +545,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Link8.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Link8.STL" />
       </geometry>
       <material
         name="">
@@ -550,7 +559,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://alicia_duo_descriptions/meshes/Link8.STL" />
+          filename="package://alicia_duo_descriptions/meshes_v1/Link8.STL" />
       </geometry>
     </collision>
   </link>

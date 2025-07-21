@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
-     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
-     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
-<robot
-  name="alicia_duo_descriptions">
+<robot name="alicia_D_v5_4">
   <mujoco>
-    <compiler meshdir="../meshes" balanceinertia="true"  discardvisual="false" />
+    <compiler meshdir="../meshes" discardvisual="false" />
+    <contact>
+      <exclude body1="base_link" body2="Link1"/>
+      <exclude body1="Link1" body2="Link2"/>
+      <exclude body1="Link2" body2="Link3"/>
+      <exclude body1="Link3" body2="Link4"/>
+      <exclude body1="Link4" body2="Link5"/>
+      <exclude body1="Link5" body2="Link6"/>
+      <exclude body1="Link6" body2="Link7"/>
+      <exclude body1="Link6" body2="Link8"/>
+    </contact>
   </mujoco>
   <link
     name="base_link">
@@ -144,8 +150,8 @@
     <axis
       xyz="0 0 -1" />
     <limit
-      lower="-3.14"
-      upper="3.14"
+      lower="-1.57"
+      upper="1.57"
       effort="12"
       velocity="5" />
   </joint>
@@ -202,8 +208,8 @@
     <axis
       xyz="0 0 -1" />
     <limit
-      lower="-3.14"
-      upper="3.14"
+      lower="-0.5"
+      upper="2.35619"
       effort="12"
       velocity="5" />
   </joint>
@@ -318,8 +324,8 @@
     <axis
       xyz="0 0 -1" />
     <limit
-      lower="-3.14"
-      upper="3.14"
+      lower="-1.57"
+      upper="1.5"
       effort="12"
       velocity="5" />
   </joint>
@@ -476,7 +482,7 @@
   </link>
   <joint
     name="left_finger"
-    type="fixed">
+    type="prismatic">
     <origin
       xyz="0.00275 -0.0011661 0.13779"
       rpy="1.5451 0 0" />
@@ -485,9 +491,9 @@
     <child
       link="Link7" />
     <axis
-      xyz="0 0 0" />
+      xyz="0 0 -1" />
     <limit
-      lower="-0.0125"
+      lower="-0.025"
       upper="0"
       effort="5"
       velocity="10" />
@@ -519,7 +525,7 @@
       <material
         name="">
         <color
-          rgba="0.807843137254902 0.843137254901961 0.905882352941176 1" />
+          rgba="1 1 1 1" />
       </material>
     </visual>
     <collision>
@@ -534,7 +540,7 @@
   </link>
   <joint
     name="right_finger"
-    type="fixed">
+    type="prismatic">
     <origin
       xyz="0.00275 0.0028325 0.13768"
       rpy="-1.5965 0 0" />
@@ -543,10 +549,10 @@
     <child
       link="Link8" />
     <axis
-      xyz="0 0 0" />
+      xyz="0 0 1" />
     <limit
       lower="0"
-      upper="0.0125"
+      upper="0.025"
       effort="5"
       velocity="10" />
   </joint>

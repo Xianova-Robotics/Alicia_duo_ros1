@@ -3,7 +3,7 @@
     name="model" />
   <param
     name="robot_description"
-    textfile="$(find Alicia_duo_description7)/urdf/Alicia_duo_description7.urdf" />
+    textfile="$(find alicia_duo_descriptions)/urdf/alicia_duo_with_gripper.urdf" />
   <node
     name="joint_state_publisher_gui"
     pkg="joint_state_publisher_gui"
@@ -16,5 +16,5 @@
     name="rviz"
     pkg="rviz"
     type="rviz"
-    args="-d $(find Alicia_duo_description7)/urdf.rviz" />
+    args="-d $(find alicia_duo_descriptions)/config/urdf.rviz" />
 </launch>
